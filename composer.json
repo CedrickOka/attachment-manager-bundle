@@ -2,7 +2,7 @@
 	"name" : "coka/attachment-manager-bundle",
 	"type" : "symfony-bundle",
 	"license" : "MIT",
-	"description" : "Attachment manager",
+	"description" : "Attachment Manager Symfony Bundle",
 	"keywords" : [
 		"file",
 		"s3"
@@ -42,10 +42,10 @@
 		"doctrine/mongodb-odm-bundle" : "^4.5",
 		"doctrine/orm" : "^2.13",
 		"friendsofphp/php-cs-fixer" : "^3",
-		"symfony/browser-kit" : "^5.4.*",
+		"symfony/browser-kit" : "5.4.*",
 		"symfony/framework-bundle" : "5.4.*",
 		"symfony/phpunit-bridge" : "5.4.*",
-		"symfony/proxy-manager-bridge" : "^5.4.*"
+		"symfony/proxy-manager-bridge" : "5.4.*"
 	},
 	"config" : {
 		"sort-packages" : true
