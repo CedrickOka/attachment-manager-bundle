@@ -1,0 +1,37 @@
+services:
+    oka_attachment_manager.attachment.serializer.normalizer:
+        class: Oka\AttachmentManagerBundle\Serializer\AttachmentNormalizer
+        arguments: ['@Symfony\Component\Serializer\Normalizer\ObjectNormalizer', '@oka_attachment_manager.volume_handler_manager']
+        tags: ['serializer.normalizer']
+
+    oka_attachment_manager.file_volume_handler.factory:
+        class: Oka\AttachmentManagerBundle\Volume\FileVolumeHandlerFactory
+        tags: ['oka_attachment_manager.volume_handler.factory']
+
+    oka_attachment_manager.s3_volume_handler.factory:
+        class: Oka\AttachmentManagerBundle\Volume\S3VolumeHandlerFactory
+        tags: ['oka_attachment_manager.volume_handler.factory']
+
+    oka_attachment_manager.volume_handler_manager:
+        class: Oka\AttachmentManagerBundle\Service\VolumeHandlerManager
+        arguments: [!tagged_iterator oka_attachment_manager.volume_handler.factory, []]
+
+    oka_attachment_manager.attachment_manager_locator:
+        class: Symfony\Component\DependencyInjection\ServiceLocator
+        tags: ['container.service_locator']
+
+    oka_attachment_manager.volume_controller:
+        class: Oka\AttachmentManagerBundle\Controller\VolumeController
+        arguments: ['@serializer', '@oka_attachment_manager.volume_handler_manager']
+
+    oka_attachment_manager.attachment_controller:
+        class: Oka\AttachmentManagerBundle\Controller\AttachmentController
+        arguments: ['@serializer', '@oka_attachment_manager.attachment_manager_locator', []]
+
+    Oka\AttachmentManagerBundle\Controller\VolumeController:
+        public: true
+        alias: 'oka_attachment_manager.volume_controller'
+
+    Oka\AttachmentManagerBundle\Controller\AttachmentController:
+        public: true
+        alias: 'oka_attachment_manager.attachment_controller'

@@ -1,0 +1,106 @@
+framework:
+    test: true
+    secret: 'secret'
+    default_locale: 'fr'
+    session:
+        storage_id: session.storage.mock_file
+    php_errors:
+        log: true
+
+    cache:
+        # Put the unique name of your app here: the prefix seed
+        # is used to compute stable namespaces for cache keys.
+        #prefix_seed: your_vendor_name/app_name
+
+        # The app cache caches to the filesystem by default.
+        # Other options include:
+
+        # Redis
+        #app: cache.adapter.redis
+        #default_redis_provider: redis://localhost
+
+        # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
+        #app: cache.adapter.apcu
+    router:
+        resource: '%kernel.project_dir%/config/routing.yaml'
+        utf8: true
+
+doctrine:
+    dbal:
+        connections:
+            default:
+                driver: 'pdo_sqlite'
+                url: '%env(resolve:DATABASE_URL)%'
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/tests/Entity'
+                prefix: 'Oka\AttachmentManagerBundle\Tests\Entity'
+                alias: App
+
+doctrine_mongodb:
+    auto_generate_proxy_classes: true
+    auto_generate_hydrator_classes: true
+    connections:
+        default:
+            server: '%env(resolve:MONGODB_URL)%'
+            options: {}
+    default_database: '%env(resolve:MONGODB_DB)%'
+    document_managers:
+        default:
+            auto_mapping: true
+            mappings:
+                App:
+                    is_bundle: false
+                    type: annotation
+                    dir: '%kernel.project_dir%/tests/Document'
+                    prefix: 'Oka\AttachmentManagerBundle\Tests\Document'
+                    alias: App
+
+oka_input_handler:
+    error_handler:
+        default_request_format: 'json'
+        override_problem_normalizer: true
+
+oka_attachment_manager:
+    prefix_separator: '.'
+    volumes:
+        file:
+            dsn: file:///tmp/acme
+            public_url: http://localhost
+            options: []
+        s3:
+            dsn: s3://acme
+            public_url: '%env(OBJECT_STORAGE_PUBLIC_URL)%'
+            options:
+                version: latest
+                region: africa
+                use_path_style_endpoint: true
+                endpoint: '%env(OBJECT_STORAGE_URL)%'
+                credentials:
+                    key: '%env(OBJECT_STORAGE_ROOT_USER)%'
+                    secret: '%env(OBJECT_STORAGE_ROOT_PASSWORD)%'
+                #debug: '%kernel.debug%'
+    orm:
+        model_manager_name: ~
+        class: Oka\AttachmentManagerBundle\Tests\Entity\Attachment
+        related_objects:
+            acme_orm:
+                class: Oka\AttachmentManagerBundle\Tests\Entity\Acme
+                volume_used: file
+                directory: ~
+                prefix: ~
+    mongodb:
+        model_manager_name: ~
+        class: Oka\AttachmentManagerBundle\Tests\Document\Attachment
+        related_objects:
+            acme_mongodb:
+                class: Oka\AttachmentManagerBundle\Tests\Document\Acme
+                volume_used: s3
+                directory: ~
+                prefix: ~

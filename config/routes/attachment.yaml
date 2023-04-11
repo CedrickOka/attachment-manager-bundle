@@ -1,0 +1,19 @@
+oka_attachment_manager_attachments_create:
+    methods: POST
+    path: /{version}/{protocol}/attachments
+    controller: Oka\AttachmentManagerBundle\Controller\AttachmentController::create
+
+oka_attachment_manager_attachments_read:
+    methods: GET
+    path: /{version}/{protocol}/attachments/{id}/{relatedObjectName}
+    controller: Oka\AttachmentManagerBundle\Controller\AttachmentController::read
+
+oka_attachment_manager_attachments_update:
+    methods: PUT
+    path: /{version}/{protocol}/attachments/{id}/{relatedObjectName}
+    controller: Oka\AttachmentManagerBundle\Controller\AttachmentController::update
+
+oka_attachment_manager_attachments_delete:
+    methods: DELETE
+    path: /{version}/{protocol}/attachments/{id}/{relatedObjectName}
+    controller: Oka\AttachmentManagerBundle\Controller\AttachmentController::delete

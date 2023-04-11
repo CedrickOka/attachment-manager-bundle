@@ -1,0 +1,11 @@
+oka_attachment_manager_volumes:
+    resource: "@OkaAttachmentManagerBundle/config/routes/volume.yaml"
+    defaults:
+        version: v1
+        protocol: rest
+
+oka_attachment_manager_attachments:
+    resource: "@OkaAttachmentManagerBundle/config/routes/attachment.yaml"
+    defaults:
+        version: v1
+        protocol: rest

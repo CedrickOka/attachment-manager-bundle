@@ -1,0 +1,307 @@
+<wsdl:definitions xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://psi.ph.floozonline.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="WebTransactionService" targetNamespace="http://psi.ph.floozonline.com/">
+<wsdl:types>
+<xs:schema xmlns:tns="http://psi.ph.floozonline.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified" targetNamespace="http://psi.ph.floozonline.com/" version="1.0">
+<xs:element name="doCashOut" type="tns:doCashOut"/>
+<xs:element name="doCashOutResponse" type="tns:doCashOutResponse"/>
+<xs:element name="doCashin" type="tns:doCashin"/>
+<xs:element name="doCashinResponse" type="tns:doCashinResponse"/>
+<xs:element name="doGetFess" type="tns:doGetFess"/>
+<xs:element name="doGetFessResponse" type="tns:doGetFessResponse"/>
+<xs:element name="doNFCPayment" type="tns:doNFCPayment"/>
+<xs:element name="doNFCPaymentResponse" type="tns:doNFCPaymentResponse"/>
+<xs:element name="getBalance" type="tns:getBalance"/>
+<xs:element name="getBalanceResponse" type="tns:getBalanceResponse"/>
+<xs:element name="queryTransaction" type="tns:queryTransaction"/>
+<xs:element name="queryTransactionResponse" type="tns:queryTransactionResponse"/>
+<xs:element name="rollbackTransaction" type="tns:rollbackTransaction"/>
+<xs:element name="rollbackTransactionResponse" type="tns:rollbackTransactionResponse"/>
+<xs:complexType name="doCashin">
+<xs:sequence>
+<xs:element minOccurs="0" name="FloozTransactionRequest" type="tns:FloozTransaction"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="FloozTransaction">
+<xs:sequence>
+<xs:element name="token" type="xs:string"/>
+<xs:element name="customerData" type="xs:string"/>
+<xs:element name="amount" type="xs:string"/>
+<xs:element name="operationId" type="xs:string"/>
+<xs:element name="operationDesc" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="doCashinResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:FloozTransactionResponse"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="FloozTransactionResponse">
+<xs:sequence>
+<xs:element name="responseCode" type="xs:int"/>
+<xs:element minOccurs="0" name="responseMessage" type="xs:string"/>
+<xs:element minOccurs="0" name="responseDesc" type="xs:string"/>
+<xs:element minOccurs="0" name="transReference" type="xs:string"/>
+<xs:element minOccurs="0" name="data" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getBalance">
+<xs:sequence>
+<xs:element minOccurs="0" name="FloozBalanceRequest" type="tns:BalanceTransaction"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="BalanceTransaction">
+<xs:sequence>
+<xs:element name="token" type="xs:string"/>
+<xs:element name="customerData" type="xs:string"/>
+<xs:element name="terminalNumber" type="xs:string"/>
+<xs:element name="location" type="xs:string"/>
+<xs:element name="operationId" type="xs:string"/>
+<xs:element minOccurs="0" name="operationDesc" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getBalanceResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:FloozTransactionResponse"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="queryTransaction">
+<xs:sequence>
+<xs:element minOccurs="0" name="FloozQueryTransRequest" type="tns:FloozQueryTrans"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="FloozQueryTrans">
+<xs:sequence>
+<xs:element name="token" type="xs:string"/>
+<xs:element name="operationId" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="queryTransactionResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:FloozTransactionResponse"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="rollbackTransaction">
+<xs:sequence>
+<xs:element minOccurs="0" name="FloozRollbackTransRequest" type="tns:FloozRollbackTrans"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="FloozRollbackTrans">
+<xs:sequence>
+<xs:element name="token" type="xs:string"/>
+<xs:element name="amount" type="xs:string"/>
+<xs:element name="operationId" type="xs:string"/>
+<xs:element name="referenceId" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="rollbackTransactionResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:FloozTransactionResponse"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="doGetFess">
+<xs:sequence>
+<xs:element minOccurs="0" name="FloozGetFeesRequest" type="tns:GetFess"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="GetFess">
+<xs:sequence>
+<xs:element name="token" type="xs:string"/>
+<xs:element name="operationId" type="xs:string"/>
+<xs:element name="sourceNumber" type="xs:string"/>
+<xs:element name="destNumber" type="xs:string"/>
+<xs:element name="amount" type="xs:string"/>
+<xs:element name="keyDescID" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="doGetFessResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:FloozTransactionResponse"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="doNFCPayment">
+<xs:sequence>
+<xs:element minOccurs="0" name="NFCPaymentRequest" type="tns:NFCPaymentTransaction"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="NFCPaymentTransaction">
+<xs:sequence>
+<xs:element name="token" type="xs:string"/>
+<xs:element name="amount" type="xs:string"/>
+<xs:element name="customerData" type="xs:string"/>
+<xs:element name="terminalNumber" type="xs:string"/>
+<xs:element name="location" type="xs:string"/>
+<xs:element name="operationId" type="xs:string"/>
+<xs:element minOccurs="0" name="operationDesc" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="doNFCPaymentResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:FloozTransactionResponse"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="doCashOut">
+<xs:sequence>
+<xs:element minOccurs="0" name="CashOutRequest" type="tns:CashOutTransaction"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="CashOutTransaction">
+<xs:sequence>
+<xs:element name="token" type="xs:string"/>
+<xs:element name="amount" type="xs:string"/>
+<xs:element name="customerData" type="xs:string"/>
+<xs:element name="terminalNumber" type="xs:string"/>
+<xs:element name="location" type="xs:string"/>
+<xs:element name="operationId" type="xs:string"/>
+<xs:element minOccurs="0" name="operationDesc" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="doCashOutResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:FloozTransactionResponse"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
+</wsdl:types>
+<wsdl:message name="queryTransactionResponse">
+<wsdl:part element="tns:queryTransactionResponse" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="doCashin">
+<wsdl:part element="tns:doCashin" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="queryTransaction">
+<wsdl:part element="tns:queryTransaction" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="getBalance">
+<wsdl:part element="tns:getBalance" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="doCashinResponse">
+<wsdl:part element="tns:doCashinResponse" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="doNFCPayment">
+<wsdl:part element="tns:doNFCPayment" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="doGetFess">
+<wsdl:part element="tns:doGetFess" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="getBalanceResponse">
+<wsdl:part element="tns:getBalanceResponse" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="rollbackTransaction">
+<wsdl:part element="tns:rollbackTransaction" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="doCashOutResponse">
+<wsdl:part element="tns:doCashOutResponse" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="rollbackTransactionResponse">
+<wsdl:part element="tns:rollbackTransactionResponse" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="doGetFessResponse">
+<wsdl:part element="tns:doGetFessResponse" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="doCashOut">
+<wsdl:part element="tns:doCashOut" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="doNFCPaymentResponse">
+<wsdl:part element="tns:doNFCPaymentResponse" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:portType name="WebTransaction">
+<wsdl:operation name="doCashin">
+<wsdl:input message="tns:doCashin" name="doCashin"></wsdl:input>
+<wsdl:output message="tns:doCashinResponse" name="doCashinResponse"></wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getBalance">
+<wsdl:input message="tns:getBalance" name="getBalance"></wsdl:input>
+<wsdl:output message="tns:getBalanceResponse" name="getBalanceResponse"></wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="queryTransaction">
+<wsdl:input message="tns:queryTransaction" name="queryTransaction"></wsdl:input>
+<wsdl:output message="tns:queryTransactionResponse" name="queryTransactionResponse"></wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="rollbackTransaction">
+<wsdl:input message="tns:rollbackTransaction" name="rollbackTransaction"></wsdl:input>
+<wsdl:output message="tns:rollbackTransactionResponse" name="rollbackTransactionResponse"></wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="doGetFess">
+<wsdl:input message="tns:doGetFess" name="doGetFess"></wsdl:input>
+<wsdl:output message="tns:doGetFessResponse" name="doGetFessResponse"></wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="doNFCPayment">
+<wsdl:input message="tns:doNFCPayment" name="doNFCPayment"></wsdl:input>
+<wsdl:output message="tns:doNFCPaymentResponse" name="doNFCPaymentResponse"></wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="doCashOut">
+<wsdl:input message="tns:doCashOut" name="doCashOut"></wsdl:input>
+<wsdl:output message="tns:doCashOutResponse" name="doCashOutResponse"></wsdl:output>
+</wsdl:operation>
+</wsdl:portType>
+<wsdl:binding name="WebTransactionServiceSoapBinding" type="tns:WebTransaction">
+<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+<wsdl:operation name="doCashin">
+<soap:operation soapAction="doCashin" style="document"/>
+<wsdl:input name="doCashin">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="doCashinResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getBalance">
+<soap:operation soapAction="getBalance" style="document"/>
+<wsdl:input name="getBalance">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="getBalanceResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="queryTransaction">
+<soap:operation soapAction="queryTran" style="document"/>
+<wsdl:input name="queryTransaction">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="queryTransactionResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="rollbackTransaction">
+<soap:operation soapAction="rollback" style="document"/>
+<wsdl:input name="rollbackTransaction">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="rollbackTransactionResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="doGetFess">
+<soap:operation soapAction="doGetFess" style="document"/>
+<wsdl:input name="doGetFess">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="doGetFessResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="doNFCPayment">
+<soap:operation soapAction="doNFCPayment" style="document"/>
+<wsdl:input name="doNFCPayment">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="doNFCPaymentResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="doCashOut">
+<soap:operation soapAction="doCashOut" style="document"/>
+<wsdl:input name="doCashOut">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="doCashOutResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:service name="WebTransactionService">
+<wsdl:port binding="tns:WebTransactionServiceSoapBinding" name="WebTransactionPort">
+<soap:address location="http://10.177.24.77:9008/FloozOnlineTransactions/FloozOnline"/>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>

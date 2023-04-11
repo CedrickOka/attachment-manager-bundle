@@ -1,0 +1,9 @@
+oka_attachment_manager_volumes_create:
+    methods: POST
+    path: /{version}/{protocol}/volumes
+    controller: Oka\AttachmentManagerBundle\Controller\VolumeController::create
+
+oka_attachment_manager_volumes_delete:
+    methods: DELETE
+    path: /{version}/{protocol}/volumes/{name}
+    controller: Oka\AttachmentManagerBundle\Controller\VolumeController::delete
