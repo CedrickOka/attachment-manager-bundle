@@ -10,12 +10,8 @@
         <field name="metadata" column="metadata" type="json" />
         <field name="lastModified" column="last_modified" type="datetime" />
 
-        <embedded name="relatedObject" class="Oka\AttachmentManagerBundle\Model\AttachmentRelatedObject" column-prefix="related_object_" />
-
         <indexes>
             <index name="volume_name_idx" columns="volume_name"/>
-            <index name="related_object_class_idx" columns="related_object_class"/>
-            <index name="related_object_identifier_idx" columns="related_object_identifier"/>
         </indexes>
 
         <unique-constraints>

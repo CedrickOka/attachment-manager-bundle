@@ -28,13 +28,11 @@ class DoctrineORMListener extends AbstractDoctrineListener
         $classMetadata->mapManyToMany([
             'fieldName' => 'attachments',
             'targetEntity' => $this->className,
-            'cascade' => ['all'],
             'fetch' => ClassMetadata::FETCH_EXTRA_LAZY,
             'joinTable' => [
                 'name' => sprintf('%s_attachment', $classMetadata->getTableName()),
                 'joinColumns' => [
                     [
-                        'id' => true,
                         'name' => sprintf('%s_id', $classMetadata->getTableName()),
                         'referencedColumnName' => 'id',
                         'onDelete' => 'CASCADE',
@@ -43,16 +41,9 @@ class DoctrineORMListener extends AbstractDoctrineListener
                 ],
                 'inverseJoinColumns' => [
                     [
-                        'id' => true,
                         'name' => 'attachment_id',
                         'referencedColumnName' => 'id',
                         'onDelete' => 'CASCADE',
-                        'nullable' => false,
-                    ],
-                    [
-                        'id' => true,
-                        'name' => 'attachment_related_object_class_name',
-                        'referencedColumnName' => 'related_object_class_name',
                         'nullable' => false,
                     ],
                 ]

@@ -15,7 +15,7 @@ class Attachment extends AbstractAttachment
     /**
      * @MongoDB\Id()
      *
-     * @Serializer\Groups({"summary", "details", "payment", "insights"})
+     * @Serializer\Groups({"summary", "details"})
      *
      * @var string
      */

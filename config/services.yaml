@@ -1,4 +1,14 @@
 services:
+    oka_attachment_manager.is_related_object_name_validator:
+        class: Oka\AttachmentManagerBundle\Validator\IsRelatedObjectNameValidator
+        arguments: [[]]
+        tags: ['validator.constraint_validator']
+
+    oka_attachment_manager.uploaded_file_validator:
+        class: Oka\AttachmentManagerBundle\Validator\UploadedFileValidator
+        arguments: [[], '@validator']
+        tags: ['validator.constraint_validator']
+
     oka_attachment_manager.attachment.serializer.normalizer:
         class: Oka\AttachmentManagerBundle\Serializer\AttachmentNormalizer
         arguments: ['@Symfony\Component\Serializer\Normalizer\ObjectNormalizer', '@oka_attachment_manager.volume_handler_manager']
@@ -26,7 +36,7 @@ services:
 
     oka_attachment_manager.attachment_controller:
         class: Oka\AttachmentManagerBundle\Controller\AttachmentController
-        arguments: ['@serializer', '@oka_attachment_manager.attachment_manager_locator', []]
+        arguments: ['@validator', '@serializer', '@oka_attachment_manager.attachment_manager_locator', []]
 
     Oka\AttachmentManagerBundle\Controller\VolumeController:
         public: true

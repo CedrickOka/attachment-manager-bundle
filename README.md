@@ -1,15 +1,15 @@
-OkaNotifierClientBundle
+OkaAttachmentManagerBundle
 =========================
 
 This bundle allows send notification.
 
-[![Latest Stable Version](https://poser.pugx.org/coka/doctrine-secret-type-bundle/v/stable)](https://packagist.org/packages/coka/doctrine-secret-type-bundle)
-[![Total Downloads](https://poser.pugx.org/coka/doctrine-secret-type-bundle/downloads)](https://packagist.org/packages/coka/doctrine-secret-type-bundle)
-[![Latest Unstable Version](https://poser.pugx.org/coka/doctrine-secret-type-bundle/v/unstable)](https://packagist.org/packages/coka/doctrine-secret-type-bundle)
-[![License](https://poser.pugx.org/coka/doctrine-secret-type-bundle/license)](https://packagist.org/packages/coka/doctrine-secret-type-bundle)
-[![Monthly Downloads](https://poser.pugx.org/coka/doctrine-secret-type-bundle/d/monthly)](https://packagist.org/packages/coka/doctrine-secret-type-bundle)
-[![Daily Downloads](https://poser.pugx.org/coka/doctrine-secret-type-bundle/d/daily)](https://packagist.org/packages/coka/doctrine-secret-type-bundle)
-[![Travis CI](https://travis-ci.org/CedrickOka/doctrine-secret-type-bundle.svg?branch=master)](https://travis-ci.org/CedrickOka/doctrine-secret-type-bundle)
+[![Latest Stable Version](https://poser.pugx.org/coka/attachment-manager-bundle/v/stable)](https://packagist.org/packages/coka/attachment-manager-bundle)
+[![Total Downloads](https://poser.pugx.org/coka/attachment-manager-bundle/downloads)](https://packagist.org/packages/coka/attachment-manager-bundle)
+[![Latest Unstable Version](https://poser.pugx.org/coka/attachment-manager-bundle/v/unstable)](https://packagist.org/packages/coka/attachment-manager-bundle)
+[![License](https://poser.pugx.org/coka/attachment-manager-bundle/license)](https://packagist.org/packages/coka/attachment-manager-bundle)
+[![Monthly Downloads](https://poser.pugx.org/coka/attachment-manager-bundle/d/monthly)](https://packagist.org/packages/coka/attachment-manager-bundle)
+[![Daily Downloads](https://poser.pugx.org/coka/attachment-manager-bundle/d/daily)](https://packagist.org/packages/coka/attachment-manager-bundle)
+[![Travis CI](https://travis-ci.org/CedrickOka/attachment-manager-bundle.svg?branch=master)](https://travis-ci.org/CedrickOka/attachment-manager-bundle)
 
 Latest updates
 --------------

@@ -2,17 +2,16 @@
 
 namespace Oka\AttachmentManagerBundle\Tests\Controller;
 
+use Doctrine\ORM\Tools\SchemaTool;
+use Oka\AttachmentManagerBundle\Tests\Entity\Acme;
+use Oka\AttachmentManagerBundle\Tests\Entity\Attachment;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Oka\AttachmentManagerBundle\Tests\Entity\Attachment;
-use Oka\AttachmentManagerBundle\Tests\Entity\Acme;
-use Doctrine\ORM\Tools\SchemaTool;
 
 /**
  * @author Cedrick Oka Baidai <cedric.baidai@veone.net>
  */
-class AttachmentEntityControllerTest extends WebTestCase
+class AttachmentEntityControllerTest extends AbstractWebTestCase
 {
     public static function setUpBeforeClass(): void
     {
@@ -64,7 +63,7 @@ class AttachmentEntityControllerTest extends WebTestCase
         $content = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertResponseStatusCodeSame(201);
-        $this->assertEquals('acme_orm', $content['volumeName']);
+        $this->assertEquals('file', $content['volumeName']);
         $this->assertEquals([], $content['metadata']);
         $this->assertArrayHasKey('filename', $content);
         $this->assertArrayHasKey('lastModified', $content);
@@ -83,7 +82,7 @@ class AttachmentEntityControllerTest extends WebTestCase
         $content = json_decode($this->client->getResponse()->getContent(), true);
     
         $this->assertResponseStatusCodeSame(200);
-        $this->assertEquals('acme_orm', $content['volumeName']);
+        $this->assertEquals('file', $content['volumeName']);
         $this->assertEquals([], $content['metadata']);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
@@ -114,8 +113,8 @@ class AttachmentEntityControllerTest extends WebTestCase
         );
         $content = json_decode($this->client->getResponse()->getContent(), true);
 
-        $this->assertResponseStatusCodeSame(201);
-        $this->assertEquals('acme_orm', $content['volumeName']);
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertEquals('file', $content['volumeName']);
         $this->assertEquals([], $content['metadata']);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
@@ -132,11 +131,5 @@ class AttachmentEntityControllerTest extends WebTestCase
         $this->client->request('DELETE', sprintf('/v1/rest/attachments/%s/acme_orm', $depends['id']));
     
         $this->assertResponseStatusCodeSame(204);
-    }
-        
-    protected function setUp(): void
-    {
-        static::ensureKernelShutdown();
-        $this->client = static::createClient();
     }
 }

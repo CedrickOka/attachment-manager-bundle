@@ -10,7 +10,16 @@
         <field field-name="metadata" name="metadata" type="hash" />
         <field field-name="lastModified" name="last_modified" type="date" />
 
-		<embed-one field-name="relatedObject" field="related_object" target-document="Oka\AttachmentManagerBundle\Model\AttachmentRelatedObject" />
+        <indexes>
+            <index unique="false">
+                <key name="volumeName" order="asc" />
+                <option name="background" value="true" />
+            </index>
+            <index unique="true">
+                <key name="filename" order="asc" />
+                <option name="background" value="false" />
+            </index>
+        </indexes>
 
         <lifecycle-callbacks>
             <lifecycle-callback type="prePersist" method="prePersist"/>

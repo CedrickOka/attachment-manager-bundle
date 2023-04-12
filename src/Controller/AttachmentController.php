@@ -12,19 +12,25 @@ use Oka\InputHandlerBundle\Annotation\AccessControl;
 use Oka\InputHandlerBundle\Annotation\RequestContent;
 use Symfony\Component\Serializer\SerializerInterface;
 use Oka\AttachmentManagerBundle\Model\AbstractController;
+use Oka\AttachmentManagerBundle\Validator\IsRelatedObjectName;
+use Oka\AttachmentManagerBundle\Validator\UploadedFile;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Constraint;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
 class AttachmentController extends AbstractController
 {
+    private $validator;
     private $attachmentManagerLocator;
     private $relatedObjectDBDriverMapping;
     
-    public function __construct(SerializerInterface $serializer, ServiceLocator $attachmentManagerLocator, array $relatedObjectDBDriverMapping)
+    public function __construct(ValidatorInterface $validator, SerializerInterface $serializer, ServiceLocator $attachmentManagerLocator, array $relatedObjectDBDriverMapping)
     {
         parent::__construct($serializer);
         
+        $this->validator = $validator;
         $this->attachmentManagerLocator = $attachmentManagerLocator;
         $this->relatedObjectDBDriverMapping = $relatedObjectDBDriverMapping;
     }
@@ -40,6 +46,10 @@ class AttachmentController extends AbstractController
      */
     public function create(Request $request, $version, $protocol, array $requestContent): Response
     {
+        if (null !== ($response = $this->validate($requestContent['file'], new UploadedFile(['relatedObjectName' => $requestContent['relatedObject']['name'], 'errorPath' => '[file]'])))) {
+            return $response;
+        }
+        
         $attachment = $this->getAttachmentManager($requestContent['relatedObject']['name'])
                            ->create(
                                $requestContent['relatedObject']['name'], 
@@ -79,6 +89,10 @@ class AttachmentController extends AbstractController
      */
     public function update(Request $request, $version, $protocol, array $requestContent, string $id, string $relatedObjectName): JsonResponse
     {
+        if (null !== ($response = $this->validate($requestContent['file'], new UploadedFile(['relatedObjectName' => $relatedObjectName, 'errorPath' => '[file]'])))) {
+            return $response;
+        }
+        
         $attachmentManager = $this->getAttachmentManager($relatedObjectName);
         
         if (!$attachment = $attachmentManager->find($id)) {
@@ -116,14 +130,22 @@ class AttachmentController extends AbstractController
         return $this->attachmentManagerLocator->get($this->relatedObjectDBDriverMapping[$relatedObjectName]);
     }
     
+    protected function validate($data, Constraint $constraint = null, array $groups = []): ?Response
+    {
+        /** @var \Symfony\Component\Validator\ConstraintViolationListInterface $errors */
+        $errors = $this->validator->validate($data, $constraint, $groups);
+        
+        return $errors->count() > 0 ? $this->json($errors, 400) : null;
+    }
+    
     private static function createConstraints(): Assert\Collection
     {
         return new Assert\Collection([
             'relatedObject' => new Assert\Required(new Assert\Collection([
-                'name' => new Assert\Required(new Assert\Choice(['acme_orm', 'acme_mongodb'])),
+                'name' => new Assert\Required(new IsRelatedObjectName()),
                 'identifier' => new Assert\Required(new Assert\NotBlank()),
             ])),
-            'file' => new Assert\Required(new Assert\File(['maxSize' => '10M'])),
+            'file' => new Assert\Required(new Assert\File()),
             'metadata' => new Assert\Optional(new Assert\Collection([
                 'fields' => [],
                 'allowExtraFields' => true,

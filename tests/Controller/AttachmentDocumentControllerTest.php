@@ -2,16 +2,15 @@
 
 namespace Oka\AttachmentManagerBundle\Tests\Controller;
 
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Oka\AttachmentManagerBundle\Tests\Document\Acme;
 use Oka\AttachmentManagerBundle\Tests\Document\Attachment;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @author Cedrick Oka Baidai <cedric.baidai@veone.net>
  */
-class AttachmentDocumentControllerTest extends WebTestCase
+class AttachmentDocumentControllerTest extends AbstractWebTestCase
 {
     public static function setUpBeforeClass(): void
     {
@@ -59,12 +58,73 @@ class AttachmentDocumentControllerTest extends WebTestCase
         $content = json_decode($this->client->getResponse()->getContent(), true);
         
         $this->assertResponseStatusCodeSame(201);
-        $this->assertEquals('acme_mongodb', $content['volumeName']);
+        $this->assertEquals('s3', $content['volumeName']);
         $this->assertEquals([], $content['metadata']);
         $this->assertArrayHasKey('filename', $content);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
 
         return $content;
+    }
+    
+    /**
+     * @covers
+     * @depends testThatWeCanCreateAttachment
+     */
+    public function testThatWeCanReadAttachment(array $depends)
+    {
+        $this->client->request('GET', sprintf('/v1/rest/attachments/%s/acme_mongodb', $depends['id']));
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+        
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertEquals('s3', $content['volumeName']);
+        $this->assertEquals([], $content['metadata']);
+        $this->assertArrayHasKey('lastModified', $content);
+        $this->assertArrayHasKey('publicUrl', $content);
+        
+        return $content;
+    }
+    
+    /**
+     * @covers
+     * @depends testThatWeCanReadAttachment
+     */
+    public function testThatWeCanUpdateAttachment(array $depends)
+    {
+        $fs = new Filesystem();
+        $targetFile = sprintf('%s/../assets/logo.test.png', __DIR__);
+        $fs->copy(sprintf('%s/../assets/logo.png', __DIR__), $targetFile);
+        
+        $this->client->request(
+            'PUT',
+            sprintf('/v1/rest/attachments/%s/acme_mongodb', $depends['id']),
+            [],
+            [
+                'file' => new UploadedFile($targetFile, 'logo.png', 'image/png'),
+            ],
+            [
+                'CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740',
+            ]
+        );
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+        
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertEquals('s3', $content['volumeName']);
+        $this->assertEquals([], $content['metadata']);
+        $this->assertArrayHasKey('lastModified', $content);
+        $this->assertArrayHasKey('publicUrl', $content);
+        
+        return $content;
+    }
+    
+    /**
+     * @covers
+     * @depends testThatWeCanUpdateAttachment
+     */
+    public function testThatWeCanDeleteAttachment(array $depends)
+    {
+        $this->client->request('DELETE', sprintf('/v1/rest/attachments/%s/acme_mongodb', $depends['id']));
+        
+        $this->assertResponseStatusCodeSame(204);
     }
 }

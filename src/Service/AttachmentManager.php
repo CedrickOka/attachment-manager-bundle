@@ -4,14 +4,12 @@ namespace Oka\AttachmentManagerBundle\Service;
 use Doctrine\Persistence\ObjectManager;
 use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
 use Oka\AttachmentManagerBundle\Model\AttachmentManagerInterface;
-use Oka\AttachmentManagerBundle\Model\AttachmentRelatedObject;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Oka\AttachmentManagerBundle\Event\UploadedFileEvent;
 use Symfony\Component\Uid\Uuid;
-use Oka\AttachmentManagerBundle\Traits\Attacheable;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -19,7 +17,7 @@ use Oka\AttachmentManagerBundle\Traits\Attacheable;
 class AttachmentManager implements AttachmentManagerInterface
 {
     private $prefixSeparator;
-    private $class;
+    private $className;
     private $relatedObjets;
     private $objectManager;
     private $volumeHandlerManager;
@@ -32,19 +30,19 @@ class AttachmentManager implements AttachmentManagerInterface
     
     public function __construct(
         string $prefixSeparator, 
-        string $class,
+        string $className,
         array $relatedObjets,
         ObjectManager $objectManager, 
         VolumeHandlerManager $volumeHandlerManager,
         EventDispatcherInterface $dispatcher
     ) {
         $this->prefixSeparator = $prefixSeparator;
-        $this->class = $class;
+        $this->className = $className;
         $this->relatedObjets = new ParameterBag($relatedObjets);
         $this->objectManager = $objectManager;
         $this->volumeHandlerManager = $volumeHandlerManager;
         $this->dispatcher = $dispatcher;
-        $this->objectRepository = $objectManager->getRepository($this->class);
+        $this->objectRepository = $objectManager->getRepository($className);
     }
     
     public function create(string $relatedObjectName, string $relatedObjectIdentifier, UploadedFile $uploadedFile, array $metadata = []): AttachmentInterface
@@ -61,8 +59,7 @@ class AttachmentManager implements AttachmentManagerInterface
         }
         
         /** @var \Oka\AttachmentManagerBundle\Model\AttachmentInterface $attachment */
-        $attachment = new $this->class();
-        $attachment->setRelatedObject(new AttachmentRelatedObject($relatedObjectConfig['class'], $relatedObjectIdentifier));
+        $attachment = new $this->className();
         $attachment->setVolumeName($relatedObjectConfig['volume_used']);
         $attachment->setMetadata($metadata);
         
@@ -76,11 +73,11 @@ class AttachmentManager implements AttachmentManagerInterface
             isset($extensions[0]) ? '.'.$extensions[0] : ''
         ));
         
-        $relatedObject->addAttachment($attachment);
-        
         if (false === $this->objectManager->contains($attachment)) {
             $this->objectManager->persist($attachment);
         }
+        
+        $relatedObject->addAttachment($attachment);
         
         if (!$this->volumeHandlerManager->exists($relatedObjectConfig['volume_used'])) {
             $this->volumeHandlerManager->create($relatedObjectConfig['volume_used']);

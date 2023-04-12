@@ -3,8 +3,8 @@
 namespace Oka\AttachmentManagerBundle\Tests\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Oka\AttachmentManagerBundle\Traits\AttacheableEntity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Oka\AttachmentManagerBundle\Traits\Attacheable;
 
 /**
  * @ORM\Entity()
@@ -14,7 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Acme
 {
-    use AttacheableEntity;
+    use Attacheable;
     
     /**
      * @ORM\Id()

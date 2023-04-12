@@ -20,36 +20,36 @@ class Configuration implements ConfigurationInterface
         
         $rootNode
             ->addDefaultsIfNotSet()
-            ->validate()
-                ->ifTrue(static function ($v) {
-                    $relatedObjectNames = [];
+//             ->validate()
+//                 ->ifTrue(static function ($v) {
+//                     $relatedObjectNames = [];
                     
-                    foreach (['orm', 'mongodb'] as $dbDriver) {
-                        foreach ($v[$dbDriver]['related_objects'] as $key => $value) {
-                            $relatedObjectNames[] = strtolower($key);
-                        }
-                    }
+//                     foreach (['orm', 'mongodb'] as $dbDriver) {
+//                         foreach ($v[$dbDriver]['related_objects'] as $key => $value) {
+//                             $relatedObjectNames[] = strtolower($key);
+//                         }
+//                     }
                     
-                    return count($relatedObjectNames) !== count(array_unique($relatedObjectNames));
-                })
-                ->thenInvalid('Related objects cannot have the same name.')
-            ->end()
-            ->validate()
-                ->ifTrue(static function ($v) {
-                    $volumeNames = array_keys($v['volumes']);
+//                     return count($relatedObjectNames) !== count(array_unique($relatedObjectNames));
+//                 })
+//                 ->thenInvalid('Related objects cannot have the same name.')
+//             ->end()
+//             ->validate()
+//                 ->ifTrue(static function ($v) {
+//                     $volumeNames = array_keys($v['volumes']);
                     
-                    foreach (['orm', 'mongodb'] as $dbDriver) {
-                        foreach ($v[$dbDriver]['related_objects'] as $value) {
-                            if (!in_array($value['volume_used'], $volumeNames)) {
-                                return true;
-                            }
-                        }
-                    }
+//                     foreach (['orm', 'mongodb'] as $dbDriver) {
+//                         foreach ($v[$dbDriver]['related_objects'] as $value) {
+//                             if (!in_array($value['volume_used'], $volumeNames)) {
+//                                 return true;
+//                             }
+//                         }
+//                     }
                     
-                    return false;
-                })
-                ->thenInvalid('A related object uses an undefined volume name.')
-            ->end()
+//                     return false;
+//                 })
+//                 ->thenInvalid('A related object uses an undefined volume name.')
+//             ->end()
             ->children()
                 ->scalarNode('prefix_separator')
                     ->defaultValue('.')
@@ -147,6 +147,10 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('volume_used')
                                 ->isRequired()
                                 ->cannotBeEmpty()
+                            ->end()
+                            
+                            ->scalarNode('upload_max_size')
+                                ->defaultNull()
                             ->end()
                             
                             ->scalarNode('directory')

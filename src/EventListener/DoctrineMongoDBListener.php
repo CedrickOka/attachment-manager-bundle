@@ -4,6 +4,7 @@ namespace Oka\AttachmentManagerBundle\EventListener;
 use Doctrine\ODM\MongoDB\Events;
 use Doctrine\ODM\MongoDB\Event\LoadClassMetadataEventArgs;
 use Oka\AttachmentManagerBundle\Model\AbstractDoctrineListener;
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -28,6 +29,8 @@ class DoctrineMongoDBListener extends AbstractDoctrineListener
             'fieldName' => 'attachments',
             'targetDocument' => $this->className,
             'isCascadeRemove' => true,
+            'orphanRemoval' => true,
+            'storeAs' => ClassMetadata::REFERENCE_STORE_AS_DB_REF_WITH_DB,
         ]);
     }
     

@@ -93,6 +93,7 @@ oka_attachment_manager:
             acme_orm:
                 class: Oka\AttachmentManagerBundle\Tests\Entity\Acme
                 volume_used: file
+                upload_max_size: ~
                 directory: ~
                 prefix: ~
     mongodb:
@@ -102,5 +103,6 @@ oka_attachment_manager:
             acme_mongodb:
                 class: Oka\AttachmentManagerBundle\Tests\Document\Acme
                 volume_used: s3
+                upload_max_size: ~
                 directory: ~
                 prefix: ~

@@ -7,7 +7,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Parameter;
 use Oka\AttachmentManagerBundle\OkaAttachmentManagerBundle;
 
 /**
@@ -23,6 +22,7 @@ class OkaAttachmentManagerExtension extends Extension
         $container->setParameter('oka_attachment_manager.prefix_separator', $config['prefix_separator']);
         
         $relatedObjectDBDriverMapping = [];
+        $relatedObjectUploadMaxSizes = [];
         
         foreach (['orm', 'mongodb'] as $dbDriver) {
             if (false === $this->isConfigEnabled($container, $config[$dbDriver])) {
@@ -36,6 +36,7 @@ class OkaAttachmentManagerExtension extends Extension
             
             foreach ($config[$dbDriver]['related_objects'] as $name => $value) {
                 $relatedObjectDBDriverMapping[$name] = $dbDriver;
+                $relatedObjectUploadMaxSizes[$name] = $value['upload_max_size'];
             }
             
             $container
@@ -50,8 +51,16 @@ class OkaAttachmentManagerExtension extends Extension
         $loader->load('services.yaml');
         
         $container
+            ->getDefinition('oka_attachment_manager.is_related_object_name_validator')
+            ->replaceArgument(0, array_keys($relatedObjectDBDriverMapping));
+            
+        $container
+            ->getDefinition('oka_attachment_manager.uploaded_file_validator')
+            ->replaceArgument(0, $relatedObjectUploadMaxSizes);
+        
+        $container
             ->getDefinition('oka_attachment_manager.attachment_controller')
-            ->replaceArgument(2, $relatedObjectDBDriverMapping);
+            ->replaceArgument(3, $relatedObjectDBDriverMapping);
         
         $container
             ->getDefinition('oka_attachment_manager.volume_handler_manager')

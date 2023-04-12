@@ -1,10 +1,8 @@
 <?php
 namespace Oka\AttachmentManagerBundle\Model;
 
-use Oka\AttachmentManagerBundle\Reflection\ClassAnalyzer;
 use Doctrine\Common\EventSubscriber;
-use Oka\AttachmentManagerBundle\Traits\AttacheableEntity;
-use Oka\AttachmentManagerBundle\Traits\AttacheableDocument;
+use Oka\AttachmentManagerBundle\Reflection\ClassAnalyzer;
 use Oka\AttachmentManagerBundle\Traits\Attacheable;
 
 /**
@@ -27,8 +25,6 @@ abstract class AbstractDoctrineListener implements EventSubscriber
     
     protected function isObjectSupported(\ReflectionClass $reflClass, bool $recursive = true): bool
     {
-        return $this->classAnalyser->hasTrait($reflClass, Attacheable::class, $recursive) || 
-                $this->classAnalyser->hasTrait($reflClass, AttacheableEntity::class, $recursive) || 
-                $this->classAnalyser->hasTrait($reflClass, AttacheableDocument::class, $recursive);
+        return $this->classAnalyser->hasTrait($reflClass, Attacheable::class, $recursive);
     }
 }

@@ -2,8 +2,8 @@
 namespace Oka\AttachmentManagerBundle\Tests\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-use Oka\AttachmentManagerBundle\Traits\AttacheableDocument;
 use Doctrine\Common\Collections\ArrayCollection;
+use Oka\AttachmentManagerBundle\Traits\Attacheable;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -12,7 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Acme
 {
-    use AttacheableDocument;
+    use Attacheable;
     
     /**
      * @MongoDB\Id()

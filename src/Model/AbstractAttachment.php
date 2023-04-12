@@ -22,11 +22,6 @@ abstract class AbstractAttachment implements AttachmentInterface
     protected $metadata;
     
     /**
-     * @var \Oka\AttachmentManagerBundle\Model\AttachmentRelatedObjectInterface
-     */
-    protected $relatedObject;
-    
-    /**
      * @var \DateTimeInterface
      */
     protected $lastModified;
@@ -68,18 +63,6 @@ abstract class AbstractAttachment implements AttachmentInterface
     public function setMetadata(array $metadata): self
     {
         $this->metadata = $metadata;
-        
-        return $this;
-    }
-    
-    public function getRelatedObject(): AttachmentRelatedObjectInterface
-    {
-        return $this->relatedObject;
-    }
-    
-    public function setRelatedObject(AttachmentRelatedObjectInterface $relatedObject): self
-    {
-        $this->relatedObject = $relatedObject;
         
         return $this;
     }
