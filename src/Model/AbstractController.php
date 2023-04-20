@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle\Model;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,12 +12,12 @@ use Symfony\Component\Serializer\SerializerInterface;
 abstract class AbstractController
 {
     private $serializer;
-    
+
     public function __construct(SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
     }
-    
+
     protected function json($data, int $statusCode = 200, array $headers = [], array $context = []): JsonResponse
     {
         $context = [
@@ -25,7 +26,7 @@ abstract class AbstractController
             AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true,
             ...$context,
         ];
-        
+
         return new JsonResponse($this->serializer->serialize($data, 'json', $context), $statusCode, $headers, true);
     }
 }

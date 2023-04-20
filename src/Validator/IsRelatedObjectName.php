@@ -1,11 +1,12 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle\Validator;
 
 use Symfony\Component\Validator\Constraint;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- * 
+ *
  * @Annotation
  */
 #[\Attribute]

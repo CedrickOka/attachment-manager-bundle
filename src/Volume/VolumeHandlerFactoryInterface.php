@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle\Volume;
 
 /**
@@ -7,6 +8,6 @@ namespace Oka\AttachmentManagerBundle\Volume;
 interface VolumeHandlerFactoryInterface
 {
     public function supports(string $dsn): bool;
-        
+
     public function create(string $dsn, array $options = []): VolumeHandlerInterface;
 }

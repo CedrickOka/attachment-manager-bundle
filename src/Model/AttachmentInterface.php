@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle\Model;
 
 /**
@@ -7,18 +8,18 @@ namespace Oka\AttachmentManagerBundle\Model;
 interface AttachmentInterface
 {
     public function getVolumeName(): string;
-    
+
     public function setVolumeName(string $volumeName): self;
-    
+
     public function getFilename(): string;
-    
+
     public function setFilename(string $filename): self;
-    
+
     public function getMetadata(): array;
-    
+
     public function setMetadata(array $metadata): self;
-        
+
     public function getLastModified(): \DateTimeInterface;
-    
+
     public function setLastModified(\DateTimeInterface $lastModified): self;
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle\Volume;
 
 /**

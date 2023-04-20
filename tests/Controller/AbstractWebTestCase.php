@@ -13,11 +13,10 @@ abstract class AbstractWebTestCase extends WebTestCase
      * @var \Symfony\Bundle\FrameworkBundle\KernelBrowser
      */
     protected $client;
-        
+
     protected function setUp(): void
     {
         static::ensureKernelShutdown();
-        
         $this->client = static::createClient();
     }
 }

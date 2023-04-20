@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle\Volume;
 
 use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
@@ -13,47 +14,54 @@ class FileVolumeHandler implements VolumeHandlerInterface
     {
         return file_exists($volume->getDsn());
     }
-    
+
     public function create(Volume $volume): Volume
     {
         mkdir($volume->getDsn(), 0755, true);
-        
+
         return $volume;
     }
-    
+
     public function delete(Volume $volume, bool $recursive = false): void
     {
         if (true === $recursive) {
             $files = scandir($volume->getDsn());
-            
+
             foreach ($files as $file) {
                 if ('.' === $file || '..' === $file) {
                     continue;
                 }
-                
-                $path = sprintf('%s/%s', $volume->getDsn(), $file);
+
+                $path = sprintf('%s%s%s', $volume->getDsn(), \DIRECTORY_SEPARATOR, $file);
                 is_dir($path) ? delete($path, $recursive) : unlink($path);
             }
         }
 
         rmdir($volume->getDsn());
     }
-    
+
     public function putFile(Volume $volume, AttachmentInterface $attachment, UploadedFile $uploadedFile): void
     {
-        $uploadedFile->move($volume->getDsn(), $attachment->getFilename());
+        $originalName = str_replace('\\', '/', $attachment->getFilename());
+        $pos = strrpos($originalName, '/');
+        $originalName = false === $pos ? $originalName : substr($originalName, $pos + 1);
+
+        $uploadedFile->move(
+            false === $pos ? $volume->getDsn() : sprintf('%s%s%s', $volume->getDsn(), \DIRECTORY_SEPARATOR, substr($attachment->getFilename(), 0, $pos)),
+            $originalName
+        );
     }
-    
+
     public function getFileInfo(Volume $volume, AttachmentInterface $attachment): FileInfo
     {
         return new FileInfo(
-            $attachment->getFilename(), 
-            $volume->getDsn(), 
-            $this->getAttachmentRealPath($volume, $attachment), 
+            $attachment->getFilename(),
+            $volume->getDsn(),
+            $this->getAttachmentRealPath($volume, $attachment),
             $this->getFilePublicUrl($volume, $attachment)
         );
     }
-    
+
     public function deleteFile(Volume $volume, AttachmentInterface $attachment): void
     {
         unlink($this->getAttachmentRealPath($volume, $attachment));
@@ -61,11 +69,11 @@ class FileVolumeHandler implements VolumeHandlerInterface
 
     public function getFilePublicUrl(Volume $volume, AttachmentInterface $attachment): string
     {
-        return sprintf('%s/%s', $volume->getPublicUrl() ?? '', $attachment->getFilename());
+        return sprintf('%s%s%s', $volume->getPublicUrl() ?? '', \DIRECTORY_SEPARATOR, $attachment->getFilename());
     }
-    
+
     protected function getAttachmentRealPath(Volume $volume, AttachmentInterface $attachment): string
     {
-        return sprintf('%s/%s', $volume->getDsn(), $attachment->getFilename());
+        return sprintf('%s%s%s', $volume->getDsn(), \DIRECTORY_SEPARATOR, $attachment->getFilename());
     }
 }

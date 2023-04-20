@@ -15,15 +15,13 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
     public static function setUpBeforeClass(): void
     {
         static::bootKernel();
-        
+
         /** @var \Doctrine\ODM\MongoDB\DocumentManager $dm */
         $dm = static::$container->get('doctrine_mongodb.odm.document_manager');
         $dm->createQueryBuilder(Attachment::class)->remove()->getQuery()->execute();
         $dm->createQueryBuilder(Acme::class)->remove()->getQuery()->execute();
-        
-        static::ensureKernelShutdown();
     }
-    
+
     /**
      * @covers
      */
@@ -48,15 +46,11 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
                     'identifier' => $acme->getId(),
                 ],
             ],
-            [
-                'file' => new UploadedFile($targetFile, 'logo.png', 'image/png'),
-            ],
-            [
-                'CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740',
-            ]
+            ['file' => new UploadedFile($targetFile, 'logo.png', 'image/png')],
+            ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']
         );
         $content = json_decode($this->client->getResponse()->getContent(), true);
-        
+
         $this->assertResponseStatusCodeSame(201);
         $this->assertEquals('s3', $content['volumeName']);
         $this->assertEquals([], $content['metadata']);
@@ -66,27 +60,29 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
 
         return $content;
     }
-    
+
     /**
      * @covers
+     *
      * @depends testThatWeCanCreateAttachment
      */
     public function testThatWeCanReadAttachment(array $depends)
     {
         $this->client->request('GET', sprintf('/v1/rest/attachments/%s/acme_mongodb', $depends['id']));
         $content = json_decode($this->client->getResponse()->getContent(), true);
-        
+
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('s3', $content['volumeName']);
         $this->assertEquals([], $content['metadata']);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
-        
+
         return $content;
     }
-    
+
     /**
      * @covers
+     *
      * @depends testThatWeCanReadAttachment
      */
     public function testThatWeCanUpdateAttachment(array $depends)
@@ -94,37 +90,34 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
         $fs = new Filesystem();
         $targetFile = sprintf('%s/../assets/logo.test.png', __DIR__);
         $fs->copy(sprintf('%s/../assets/logo.png', __DIR__), $targetFile);
-        
+
         $this->client->request(
             'PUT',
             sprintf('/v1/rest/attachments/%s/acme_mongodb', $depends['id']),
             [],
-            [
-                'file' => new UploadedFile($targetFile, 'logo.png', 'image/png'),
-            ],
-            [
-                'CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740',
-            ]
+            ['file' => new UploadedFile($targetFile, 'logo.png', 'image/png')],
+            ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']
         );
         $content = json_decode($this->client->getResponse()->getContent(), true);
-        
+
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('s3', $content['volumeName']);
         $this->assertEquals([], $content['metadata']);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
-        
+
         return $content;
     }
-    
+
     /**
      * @covers
+     *
      * @depends testThatWeCanUpdateAttachment
      */
     public function testThatWeCanDeleteAttachment(array $depends)
     {
         $this->client->request('DELETE', sprintf('/v1/rest/attachments/%s/acme_mongodb', $depends['id']));
-        
+
         $this->assertResponseStatusCodeSame(204);
     }
 }

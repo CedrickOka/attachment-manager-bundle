@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle\Volume;
 
 /**
@@ -10,7 +11,7 @@ class FileInfo
     private $path;
     private $realPath;
     private $publicUrl;
-    
+
     public function __construct(string $name, string $path, string $realPath, string $publicUrl)
     {
         $this->name = $name;
@@ -18,22 +19,22 @@ class FileInfo
         $this->realPath = $realPath;
         $this->publicUrl = $publicUrl;
     }
-    
+
     public function getName(): string
     {
         return $this->name;
     }
-    
+
     public function getPath(): string
     {
         return $this->path;
     }
-    
+
     public function getRealPath(): string
     {
         return $this->realPath;
     }
-    
+
     public function getPublicUrl(): string
     {
         return $this->publicUrl;

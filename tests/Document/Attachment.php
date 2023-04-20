@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle\Tests\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
@@ -20,7 +21,7 @@ class Attachment extends AbstractAttachment
      * @var string
      */
     protected $id;
-    
+
     public function getId(): string
     {
         return $this->id;

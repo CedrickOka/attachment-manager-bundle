@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
@@ -31,29 +32,29 @@ class OkaAttachmentManagerBundle extends Bundle
             'bundle' => 'doctrine/mongodb-odm-bundle',
         ],
     ];
-    
+
     public function getPath(): string
     {
         return \dirname(__DIR__);
     }
-    
+
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
-        
+
         $this->addRegisterMappingsPass($container);
-        
+
         $container->addCompilerPass(new DoctrinePass());
     }
-    
+
     private function addRegisterMappingsPass(ContainerBuilder $container)
     {
         $mapping = [realpath(__DIR__.'/../config/doctrine') => 'Oka\AttachmentManagerBundle\Model'];
-        
+
         if (true === class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass')) {
             $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mapping, ['oka_attachment_manager.orm.model_manager_name'], 'oka_attachment_manager.backend_type.orm'));
         }
-        
+
         if (true === class_exists('Doctrine\Bundle\MongoDBBundle\DependencyInjection\Compiler\DoctrineMongoDBMappingsPass')) {
             $container->addCompilerPass(DoctrineMongoDBMappingsPass::createXmlMappingDriver($mapping, ['oka_attachment_manager.mongodb.model_manager_name'], 'oka_attachment_manager.backend_type.mongodb'));
         }

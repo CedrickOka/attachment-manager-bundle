@@ -36,12 +36,12 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
-            App:
+            OkaAttachmentManagerBundle:
                 is_bundle: false
                 type: annotation
                 dir: '%kernel.project_dir%/tests/Entity'
                 prefix: 'Oka\AttachmentManagerBundle\Tests\Entity'
-                alias: App
+                alias: OkaAttachmentManagerBundle
 
 doctrine_mongodb:
     auto_generate_proxy_classes: true
@@ -55,12 +55,12 @@ doctrine_mongodb:
         default:
             auto_mapping: true
             mappings:
-                App:
+                OkaAttachmentManagerBundle:
                     is_bundle: false
                     type: annotation
                     dir: '%kernel.project_dir%/tests/Document'
                     prefix: 'Oka\AttachmentManagerBundle\Tests\Document'
-                    alias: App
+                    alias: OkaAttachmentManagerBundle
 
 oka_input_handler:
     error_handler:
@@ -86,6 +86,10 @@ oka_attachment_manager:
                     key: '%env(OBJECT_STORAGE_ROOT_USER)%'
                     secret: '%env(OBJECT_STORAGE_ROOT_PASSWORD)%'
                 #debug: '%kernel.debug%'
+        folder:
+            dsn: file:///tmp/folder
+            public_url: http://localhost
+            options: []
     orm:
         model_manager_name: ~
         class: Oka\AttachmentManagerBundle\Tests\Entity\Attachment

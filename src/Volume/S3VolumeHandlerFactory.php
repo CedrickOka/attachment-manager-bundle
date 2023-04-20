@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle\Volume;
 
 use Aws\S3\S3Client;

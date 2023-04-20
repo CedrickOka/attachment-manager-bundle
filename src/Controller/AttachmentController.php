@@ -1,21 +1,22 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle\Controller;
 
-use Symfony\Component\DependencyInjection\ServiceLocator;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Oka\AttachmentManagerBundle\Model\AttachmentManagerInterface;
-use Oka\InputHandlerBundle\Annotation\AccessControl;
-use Oka\InputHandlerBundle\Annotation\RequestContent;
-use Symfony\Component\Serializer\SerializerInterface;
 use Oka\AttachmentManagerBundle\Model\AbstractController;
+use Oka\AttachmentManagerBundle\Model\AttachmentManagerInterface;
 use Oka\AttachmentManagerBundle\Validator\IsRelatedObjectName;
 use Oka\AttachmentManagerBundle\Validator\UploadedFile;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Oka\InputHandlerBundle\Annotation\AccessControl;
+use Oka\InputHandlerBundle\Annotation\RequestContent;
+use Symfony\Component\DependencyInjection\ServiceLocator;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -25,16 +26,16 @@ class AttachmentController extends AbstractController
     private $validator;
     private $attachmentManagerLocator;
     private $relatedObjectDBDriverMapping;
-    
+
     public function __construct(ValidatorInterface $validator, SerializerInterface $serializer, ServiceLocator $attachmentManagerLocator, array $relatedObjectDBDriverMapping)
     {
         parent::__construct($serializer);
-        
+
         $this->validator = $validator;
         $this->attachmentManagerLocator = $attachmentManagerLocator;
         $this->relatedObjectDBDriverMapping = $relatedObjectDBDriverMapping;
     }
-    
+
     /**
      * Create attachment.
      *
@@ -42,6 +43,7 @@ class AttachmentController extends AbstractController
      * @param string $protocol
      *
      * @AccessControl(version="v1", protocol="rest", formats="json")
+     *
      * @RequestContent(constraints="createConstraints")
      */
     public function create(Request $request, $version, $protocol, array $requestContent): Response
@@ -49,18 +51,18 @@ class AttachmentController extends AbstractController
         if (null !== ($response = $this->validate($requestContent['file'], new UploadedFile(['relatedObjectName' => $requestContent['relatedObject']['name'], 'errorPath' => '[file]'])))) {
             return $response;
         }
-        
+
         $attachment = $this->getAttachmentManager($requestContent['relatedObject']['name'])
                            ->create(
-                               $requestContent['relatedObject']['name'], 
-                               $requestContent['relatedObject']['identifier'], 
-                               $requestContent['file'], 
+                               $requestContent['relatedObject']['name'],
+                               $requestContent['relatedObject']['identifier'],
+                               $requestContent['file'],
                                $requestContent['metadata'] ?? []
                            );
-        
+
         return $this->json($attachment, 201);
     }
-    
+
     /**
      * Show attachment details.
      *
@@ -74,10 +76,10 @@ class AttachmentController extends AbstractController
         if (!$attachment = $this->getAttachmentManager($relatedObjectName)->find($id)) {
             throw new NotFoundHttpException(sprintf('Attachment with resource identifier "%s" is not found.', $id));
         }
-        
+
         return $this->json($attachment);
     }
-    
+
     /**
      * Update attachment.
      *
@@ -85,6 +87,7 @@ class AttachmentController extends AbstractController
      * @param string $protocol
      *
      * @AccessControl(version="v1", protocol="rest", formats="json")
+     *
      * @RequestContent(constraints="updateConstraints")
      */
     public function update(Request $request, $version, $protocol, array $requestContent, string $id, string $relatedObjectName): JsonResponse
@@ -92,18 +95,18 @@ class AttachmentController extends AbstractController
         if (null !== ($response = $this->validate($requestContent['file'], new UploadedFile(['relatedObjectName' => $relatedObjectName, 'errorPath' => '[file]'])))) {
             return $response;
         }
-        
+
         $attachmentManager = $this->getAttachmentManager($relatedObjectName);
-        
+
         if (!$attachment = $attachmentManager->find($id)) {
             throw new NotFoundHttpException(sprintf('Attachment with resource identifier "%s" is not found.', $id));
         }
-        
+
         $attachmentManager->update($attachment, $requestContent['file'], $requestContent['metadata'] ?? []);
-        
+
         return $this->json($attachment);
     }
-    
+
     /**
      * Delete attachment.
      *
@@ -115,29 +118,29 @@ class AttachmentController extends AbstractController
     public function delete(Request $request, $version, $protocol, string $id, string $relatedObjectName): Response
     {
         $attachmentManager = $this->getAttachmentManager($relatedObjectName);
-        
+
         if (!$attachment = $attachmentManager->find($id)) {
             throw new NotFoundHttpException(sprintf('Attachment with resource identifier "%s" is not found.', $id));
         }
-        
+
         $attachmentManager->delete($attachment);
-        
+
         return new JsonResponse(null, 204);
     }
-    
+
     private function getAttachmentManager(string $relatedObjectName): AttachmentManagerInterface
     {
         return $this->attachmentManagerLocator->get($this->relatedObjectDBDriverMapping[$relatedObjectName]);
     }
-    
-    protected function validate($data, Constraint $constraint = null, array $groups = []): ?Response
+
+    private function validate($data, Constraint $constraint = null, array $groups = []): ?Response
     {
         /** @var \Symfony\Component\Validator\ConstraintViolationListInterface $errors */
         $errors = $this->validator->validate($data, $constraint, $groups);
-        
+
         return $errors->count() > 0 ? $this->json($errors, 400) : null;
     }
-    
+
     private static function createConstraints(): Assert\Collection
     {
         return new Assert\Collection([
@@ -152,12 +155,12 @@ class AttachmentController extends AbstractController
             ])),
         ]);
     }
-    
+
     private static function updateConstraints(): Assert\Collection
     {
         $constraints = self::createConstraints();
         unset($constraints->fields['relatedObject']);
-        
+
         return $constraints;
     }
 }

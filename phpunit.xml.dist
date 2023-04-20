@@ -18,7 +18,7 @@
 
 	<php>
 		<env name="KERNEL_CLASS" value="Oka\AttachmentManagerBundle\Tests\AppKernel"/>
-		<env name="DATABASE_URL" value="sqlite:///:memory:"/>
+		<env name="DATABASE_URL" value="sqlite:///%kernel.project_dir%/var/oka_attachment_manager.db"/>
 		<env name="MONGODB_URL" value="mongodb://root:root@localhost:27017"/>
 		<env name="MONGODB_DB" value="oka_attachment_manager"/>
 		<env name="OBJECT_STORAGE_URL" value="http://localhost:9000"/>

@@ -16,19 +16,17 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
     public static function setUpBeforeClass(): void
     {
         static::bootKernel();
-        
+
         /** @var \Doctrine\ORM\EntityManagerInterface $em */
         $em = static::$container->get('doctrine.orm.entity_manager');
         $metaData = $em->getMetadataFactory()->getAllMetadata();
         $schemaTool = new SchemaTool($em);
         $schemaTool->updateSchema($metaData);
-        
+
         $em->createQueryBuilder()->delete(Attachment::class)->getQuery()->execute();
         $em->createQueryBuilder()->delete(Acme::class)->getQuery()->execute();
-        
-        static::ensureKernelShutdown();
     }
-    
+
     /**
      * @covers
      */
@@ -53,12 +51,8 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
                     'identifier' => $acme->getId(),
                 ],
             ],
-            [
-                'file' => new UploadedFile($targetFile, 'logo.png', 'image/png'),
-            ],
-            [
-                'CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740',
-            ]
+            ['file' => new UploadedFile($targetFile, 'logo.png', 'image/png')],
+            ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']
         );
         $content = json_decode($this->client->getResponse()->getContent(), true);
 
@@ -71,16 +65,17 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
 
         return $content;
     }
-    
+
     /**
      * @covers
+     *
      * @depends testThatWeCanCreateAttachment
      */
     public function testThatWeCanReadAttachment(array $depends)
     {
         $this->client->request('GET', sprintf('/v1/rest/attachments/%s/acme_orm', $depends['id']));
         $content = json_decode($this->client->getResponse()->getContent(), true);
-    
+
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('file', $content['volumeName']);
         $this->assertEquals([], $content['metadata']);
@@ -92,6 +87,7 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
 
     /**
      * @covers
+     *
      * @depends testThatWeCanReadAttachment
      */
     public function testThatWeCanUpdateAttachment(array $depends)
@@ -104,12 +100,8 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
             'PUT',
             sprintf('/v1/rest/attachments/%s/acme_orm', $depends['id']),
             [],
-            [
-                'file' => new UploadedFile($targetFile, 'logo.png', 'image/png'),
-            ],
-            [
-                'CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740',
-            ]
+            ['file' => new UploadedFile($targetFile, 'logo.png', 'image/png')],
+            ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']
         );
         $content = json_decode($this->client->getResponse()->getContent(), true);
 
@@ -124,12 +116,13 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
 
     /**
      * @covers
+     *
      * @depends testThatWeCanUpdateAttachment
      */
     public function testThatWeCanDeleteAttachment(array $depends)
     {
         $this->client->request('DELETE', sprintf('/v1/rest/attachments/%s/acme_orm', $depends['id']));
-    
+
         $this->assertResponseStatusCodeSame(204);
     }
 }

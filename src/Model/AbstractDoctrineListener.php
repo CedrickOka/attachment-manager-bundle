@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle\Model;
 
 use Doctrine\Common\EventSubscriber;
@@ -11,18 +12,18 @@ use Oka\AttachmentManagerBundle\Traits\Attacheable;
 abstract class AbstractDoctrineListener implements EventSubscriber
 {
     protected $className;
-    
+
     /**
      * @var ClassAnalyzer
      */
     private $classAnalyser;
-    
+
     public function __construct(string $className)
     {
         $this->className = $className;
         $this->classAnalyser = new ClassAnalyzer();
     }
-    
+
     protected function isObjectSupported(\ReflectionClass $reflClass, bool $recursive = true): bool
     {
         return $this->classAnalyser->hasTrait($reflClass, Attacheable::class, $recursive);

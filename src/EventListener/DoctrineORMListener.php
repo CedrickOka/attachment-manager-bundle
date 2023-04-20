@@ -1,4 +1,5 @@
 <?php
+
 namespace Oka\AttachmentManagerBundle\EventListener;
 
 use Doctrine\ORM\Events;
@@ -15,16 +16,16 @@ class DoctrineORMListener extends AbstractDoctrineListener
     {
         /** @var \Doctrine\ORM\Mapping\ClassMetadata $classMetadata */
         $classMetadata = $event->getClassMetadata();
-        
+
         /** @var \ReflectionClass $reflClass */
         if (null === ($reflClass = $classMetadata->reflClass)) {
             return;
         }
-        
+
         if (false === $this->isObjectSupported($reflClass)) {
             return;
         }
-        
+
         $classMetadata->mapManyToMany([
             'fieldName' => 'attachments',
             'targetEntity' => $this->className,
@@ -46,11 +47,11 @@ class DoctrineORMListener extends AbstractDoctrineListener
                         'onDelete' => 'CASCADE',
                         'nullable' => false,
                     ],
-                ]
+                ],
             ],
         ]);
     }
-    
+
     public function getSubscribedEvents(): array
     {
         return [Events::loadClassMetadata];
