@@ -67,8 +67,9 @@ class AttachmentManager implements AttachmentManagerInterface
         $mimeTypes = new MimeTypes();
         $extensions = $mimeTypes->getExtensions($uploadedFile->getMimeType());
         $attachment->setFilename(sprintf(
-            '%s/%s%s%s',
+            '%s%s%s%s%s',
             $relatedObjectConfig['directory'] ?? $relatedObjectIdentifier,
+            \DIRECTORY_SEPARATOR,
             isset($relatedObjectConfig['prefix']) ? sprintf('%s%s', $relatedObjectConfig['prefix'], $this->prefixSeparator) : '',
             Uuid::v4()->__toString(),
             isset($extensions[0]) ? '.'.$extensions[0] : ''
