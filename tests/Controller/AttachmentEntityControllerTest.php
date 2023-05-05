@@ -97,7 +97,7 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
         $fs->copy(sprintf('%s/../assets/logo.png', __DIR__), $targetFile);
 
         $this->client->request(
-            'PUT',
+            'POST',
             sprintf('/v1/rest/attachments/%s/acme_orm', $depends['id']),
             [],
             ['file' => new UploadedFile($targetFile, 'logo.png', 'image/png')],
