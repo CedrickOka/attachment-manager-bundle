@@ -54,10 +54,14 @@ class FileVolumeHandler implements VolumeHandlerInterface
 
     public function getFileInfo(Volume $volume, AttachmentInterface $attachment): FileInfo
     {
+        $realPath = $this->getAttachmentRealPath($volume, $attachment);
+        
         return new FileInfo(
             $attachment->getFilename(),
             $volume->getDsn(),
-            $this->getAttachmentRealPath($volume, $attachment),
+            filesize($realPath),
+            mime_content_type($realPath),
+            $realPath,
             $this->getFilePublicUrl($volume, $attachment)
         );
     }

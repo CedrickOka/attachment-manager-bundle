@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -43,7 +44,7 @@ class OkaAttachmentManagerExtension extends Extension
             $container
                 ->setDefinition(
                     sprintf('oka_attachment_manager.%s.doctrine_listener', $dbDriver),
-                    new Definition(OkaAttachmentManagerBundle::$doctrineDrivers[$dbDriver]['subscriber_class'], [$config[$dbDriver]['class']])
+                    new Definition(OkaAttachmentManagerBundle::$doctrineDrivers[$dbDriver]['subscriber_class'], [$config[$dbDriver]['class'], new Reference('oka_attachment_manager.volume_handler_manager')])
                 )
                 ->addTag(OkaAttachmentManagerBundle::$doctrineDrivers[$dbDriver]['tag']);
         }

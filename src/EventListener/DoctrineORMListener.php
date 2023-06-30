@@ -54,6 +54,9 @@ class DoctrineORMListener extends AbstractDoctrineListener
 
     public function getSubscribedEvents(): array
     {
-        return [Events::loadClassMetadata];
+        return [
+            Events::loadClassMetadata,
+            Events::postLoad,
+        ];
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Oka\AttachmentManagerBundle\Model;
 
+use Oka\AttachmentManagerBundle\Volume\FileInfo;
+
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
@@ -26,6 +28,11 @@ abstract class AbstractAttachment implements AttachmentInterface
      * @var \DateTimeInterface
      */
     protected $lastModified;
+    
+    /**
+     * @var \Oka\AttachmentManagerBundle\Volume\FileInfo
+     */
+    protected $fileInfo;
 
     public function __construct()
     {
@@ -77,6 +84,18 @@ abstract class AbstractAttachment implements AttachmentInterface
     {
         $this->lastModified = $lastModified;
 
+        return $this;
+    }
+    
+    public function getFileInfo(): FileInfo
+    {
+        return $this->fileInfo;
+    }
+    
+    public function setFileInfo(FileInfo $fileInfo): self
+    {
+        $this->fileInfo = $fileInfo;
+        
         return $this;
     }
 

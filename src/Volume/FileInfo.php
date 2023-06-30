@@ -9,13 +9,17 @@ class FileInfo
 {
     private $name;
     private $path;
+    private $size;
+    private $mimeType;
     private $realPath;
     private $publicUrl;
 
-    public function __construct(string $name, string $path, string $realPath, string $publicUrl)
+    public function __construct(string $name, string $path, int $size, string $mimeType, string $realPath, string $publicUrl)
     {
         $this->name = $name;
         $this->path = $path;
+        $this->size = $size;
+        $this->mimeType = $mimeType;
         $this->realPath = $realPath;
         $this->publicUrl = $publicUrl;
     }
@@ -28,6 +32,16 @@ class FileInfo
     public function getPath(): string
     {
         return $this->path;
+    }
+    
+    public function getSize(): int
+    {
+        return $this->size;
+    }
+    
+    public function getMimeType(): string
+    {
+        return $this->mimeType;
     }
 
     public function getRealPath(): string
