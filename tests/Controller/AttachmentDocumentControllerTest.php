@@ -45,6 +45,9 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
                     'name' => 'acme_mongodb',
                     'identifier' => $acme->getId(),
                 ],
+                'metadata' => [
+                    'relatedObject' => 'acme_mongodb',
+                ]
             ],
             ['file' => new UploadedFile($targetFile, 'logo.png', 'image/png')],
             ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']
@@ -53,7 +56,7 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
 
         $this->assertResponseStatusCodeSame(201);
         $this->assertEquals('s3', $content['volumeName']);
-        $this->assertEquals([], $content['metadata']);
+        $this->assertEquals(['relatedObject' => 'acme_mongodb'], $content['metadata']);
         $this->assertArrayHasKey('filename', $content);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
@@ -73,7 +76,7 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('s3', $content['volumeName']);
-        $this->assertEquals([], $content['metadata']);
+        $this->assertEquals(['relatedObject' => 'acme_mongodb'], $content['metadata']);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
 
@@ -102,7 +105,7 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('s3', $content['volumeName']);
-        $this->assertEquals([], $content['metadata']);
+        $this->assertEquals(['relatedObject' => 'acme_mongodb'], $content['metadata']);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
 

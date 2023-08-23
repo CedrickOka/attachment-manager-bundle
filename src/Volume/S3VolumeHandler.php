@@ -48,6 +48,7 @@ class S3VolumeHandler extends FileVolumeHandler
             'Bucket' => $bucket,
             'Key' => $attachment->getFilename(),
             'ContentType' => $uploadedFile->getMimeType(),
+            'Metadata' => $attachment->getMetadata(),
         ]);
 
         $stream = $uploadedFile->openFile();
