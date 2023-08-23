@@ -92,8 +92,10 @@ class AttachmentController extends AbstractController
      */
     public function update(Request $request, $version, $protocol, array $requestContent, string $id, string $relatedObjectName): JsonResponse
     {
-        if (null !== ($response = $this->validate($requestContent['file'], new UploadedFile(['relatedObjectName' => $relatedObjectName, 'errorPath' => '[file]'])))) {
-            return $response;
+        if (isset($requestContent['file'])) {
+            if (null !== ($response = $this->validate($requestContent['file'], new UploadedFile(['relatedObjectName' => $relatedObjectName, 'errorPath' => '[file]'])))) {
+                return $response;
+            }
         }
 
         $attachmentManager = $this->getAttachmentManager($relatedObjectName);
@@ -102,7 +104,7 @@ class AttachmentController extends AbstractController
             throw new NotFoundHttpException(sprintf('Attachment with resource identifier "%s" is not found.', $id));
         }
 
-        $attachmentManager->update($attachment, $requestContent['file'], $requestContent['metadata'] ?? []);
+        $attachmentManager->update($attachment, $requestContent['file'] ?? null, $requestContent['metadata'] ?? []);
 
         return $this->json($attachment);
     }
@@ -143,24 +145,31 @@ class AttachmentController extends AbstractController
 
     private static function createConstraints(): Assert\Collection
     {
+        return self::itemConstraints();
+    }
+
+    private static function updateConstraints(): Assert\Collection
+    {
+        $constraints = self::itemConstraints(false);
+        unset($constraints->fields['relatedObject']);
+
+        return $constraints;
+    }
+
+    private static function itemConstraints(bool $required = true): Assert\Collection
+    {
+        $className = true === $required ? Assert\Required::class : Assert\Optional::class;
+
         return new Assert\Collection([
             'relatedObject' => new Assert\Required(new Assert\Collection([
                 'name' => new Assert\Required(new IsRelatedObjectName()),
                 'identifier' => new Assert\Required(new Assert\NotBlank()),
             ])),
-            'file' => new Assert\Required(new Assert\File()),
+            'file' => new $className(new Assert\File()),
             'metadata' => new Assert\Optional(new Assert\Collection([
                 'fields' => [],
                 'allowExtraFields' => true,
             ])),
         ]);
-    }
-
-    private static function updateConstraints(): Assert\Collection
-    {
-        $constraints = self::createConstraints();
-        unset($constraints->fields['relatedObject']);
-
-        return $constraints;
     }
 }

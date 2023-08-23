@@ -94,20 +94,23 @@ class AttachmentManager implements AttachmentManagerInterface
         return $attachment;
     }
 
-    public function update(AttachmentInterface $attachment, UploadedFile $uploadedFile, array $metadata = []): AttachmentInterface
+    public function update(AttachmentInterface $attachment, UploadedFile $uploadedFile = null, array $metadata = []): AttachmentInterface
     {
         if (!empty($metadata)) {
             $attachment->setMetadata($metadata);
         }
-
-        if (!$this->volumeHandlerManager->exists($attachment->getVolumeName())) {
-            $this->volumeHandlerManager->create($attachment->getVolumeName());
+        
+        if (null !== $uploadedFile) {
+            if (!$this->volumeHandlerManager->exists($attachment->getVolumeName())) {
+                $this->volumeHandlerManager->create($attachment->getVolumeName());
+            }
+            
+            /** @var UploadedFileEvent $event */
+            $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $uploadedFile));
+            
+            $this->volumeHandlerManager->putFile($attachment->getVolumeName(), $attachment, $event->getUploadedFile());
         }
 
-        /** @var UploadedFileEvent $event */
-        $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $uploadedFile));
-
-        $this->volumeHandlerManager->putFile($attachment->getVolumeName(), $attachment, $event->getUploadedFile());
         $this->objectManager->flush();
 
         return $attachment;
