@@ -9,7 +9,7 @@ oka_attachment_manager_attachments_read:
     controller: Oka\AttachmentManagerBundle\Controller\AttachmentController::read
 
 oka_attachment_manager_attachments_update:
-    methods: POST
+    methods: [POST, PUT]
     path: /{version}/{protocol}/attachments/{id}/{relatedObjectName}
     controller: Oka\AttachmentManagerBundle\Controller\AttachmentController::update
 
