@@ -7,7 +7,7 @@ use Oka\AttachmentManagerBundle\Event\UploadedFileEvent;
 use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
 use Oka\AttachmentManagerBundle\Model\AttachmentManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -46,7 +46,7 @@ class AttachmentManager implements AttachmentManagerInterface
         $this->objectRepository = $objectManager->getRepository($className);
     }
 
-    public function create(string $relatedObjectName, string $relatedObjectIdentifier, UploadedFile $uploadedFile, array $metadata = []): AttachmentInterface
+    public function create(string $relatedObjectName, string $relatedObjectIdentifier, File $file, array $metadata = []): AttachmentInterface
     {
         if (!$this->relatedObjets->has($relatedObjectName)) {
             throw new \InvalidArgumentException(sprintf('The related object with the name "%s" does not exist.', $relatedObjectName));
@@ -65,7 +65,7 @@ class AttachmentManager implements AttachmentManagerInterface
         $attachment->setMetadata($metadata);
 
         $mimeTypes = new MimeTypes();
-        $extensions = $mimeTypes->getExtensions($uploadedFile->getMimeType());
+        $extensions = $mimeTypes->getExtensions($file->getMimeType());
         $attachment->setFilename(sprintf(
             '%s%s%s%s%s',
             $relatedObjectConfig['directory'] ?? $relatedObjectIdentifier,
@@ -86,7 +86,7 @@ class AttachmentManager implements AttachmentManagerInterface
         }
 
         /** @var UploadedFileEvent $event */
-        $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $uploadedFile));
+        $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $file));
 
         $this->volumeHandlerManager->putFile($relatedObjectConfig['volume_used'], $attachment, $event->getUploadedFile());
         $this->objectManager->flush();
@@ -94,20 +94,20 @@ class AttachmentManager implements AttachmentManagerInterface
         return $attachment;
     }
 
-    public function update(AttachmentInterface $attachment, UploadedFile $uploadedFile = null, array $metadata = []): AttachmentInterface
+    public function update(AttachmentInterface $attachment, File $file = null, array $metadata = []): AttachmentInterface
     {
         if (!empty($metadata)) {
             $attachment->setMetadata($metadata);
         }
-        
-        if (null !== $uploadedFile) {
+
+        if (null !== $file) {
             if (!$this->volumeHandlerManager->exists($attachment->getVolumeName())) {
                 $this->volumeHandlerManager->create($attachment->getVolumeName());
             }
-            
+
             /** @var UploadedFileEvent $event */
-            $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $uploadedFile));
-            
+            $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $file));
+
             $this->volumeHandlerManager->putFile($attachment->getVolumeName(), $attachment, $event->getUploadedFile());
         }
 

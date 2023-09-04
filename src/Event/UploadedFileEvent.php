@@ -3,18 +3,18 @@
 namespace Oka\AttachmentManagerBundle\Event;
 
 use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class UploadedFileEvent extends Event
 {
     private $attachment;
-    private $uploadedFile;
+    private $file;
 
-    public function __construct(AttachmentInterface $attachment, UploadedFile $uploadedFile)
+    public function __construct(AttachmentInterface $attachment, File $file)
     {
         $this->attachment = $attachment;
-        $this->uploadedFile = $uploadedFile;
+        $this->file = $file;
     }
 
     public function getAttachment(): AttachmentInterface
@@ -22,14 +22,14 @@ class UploadedFileEvent extends Event
         return $this->attachment;
     }
 
-    public function getUploadedFile(): UploadedFile
+    public function getUploadedFile(): File
     {
-        return $this->uploadedFile;
+        return $this->file;
     }
 
-    public function setUploadedFile(UploadedFile $uploadedFile): self
+    public function setUploadedFile(File $file): self
     {
-        $this->uploadedFile = $uploadedFile;
+        $this->file = $file;
 
         return $this;
     }

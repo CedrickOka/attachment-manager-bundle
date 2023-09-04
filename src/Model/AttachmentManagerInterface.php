@@ -2,16 +2,16 @@
 
 namespace Oka\AttachmentManagerBundle\Model;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
 interface AttachmentManagerInterface
 {
-    public function create(string $relatedObjectName, string $relatedObjectIdentifier, UploadedFile $uploadedFile, array $metadata = []): AttachmentInterface;
+    public function create(string $relatedObjectName, string $relatedObjectIdentifier, File $file, array $metadata = []): AttachmentInterface;
 
-    public function update(AttachmentInterface $attachment, UploadedFile $uploadedFile, array $metadata = []): AttachmentInterface;
+    public function update(AttachmentInterface $attachment, File $file, array $metadata = []): AttachmentInterface;
 
     public function delete(AttachmentInterface $attachment): void;
 

@@ -3,7 +3,7 @@
 namespace Oka\AttachmentManagerBundle\Volume;
 
 use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -40,14 +40,14 @@ class FileVolumeHandler implements VolumeHandlerInterface
         rmdir($volume->getDsn());
     }
 
-    public function putFile(Volume $volume, AttachmentInterface $attachment, UploadedFile $uploadedFile): void
+    public function putFile(Volume $volume, AttachmentInterface $attachment, File $file): void
     {
         $originalName = str_replace('\\', '/', $attachment->getFilename());
-        $pos = strrpos($originalName, '/');
-        $originalName = false === $pos ? $originalName : substr($originalName, $pos + 1);
+        $position = strrpos($originalName, '/');
+        $originalName = false === $position ? $originalName : substr($originalName, $position + 1);
 
-        $uploadedFile->move(
-            false === $pos ? $volume->getDsn() : sprintf('%s%s%s', $volume->getDsn(), \DIRECTORY_SEPARATOR, substr($attachment->getFilename(), 0, $pos)),
+        $file->move(
+            false === $position ? $volume->getDsn() : sprintf('%s%s%s', $volume->getDsn(), \DIRECTORY_SEPARATOR, substr($attachment->getFilename(), 0, $position)),
             $originalName
         );
     }

@@ -3,7 +3,7 @@
 namespace Oka\AttachmentManagerBundle\Volume;
 
 use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -16,7 +16,7 @@ interface VolumeHandlerInterface
 
     public function delete(Volume $volume, bool $recursive = false): void;
 
-    public function putFile(Volume $volume, AttachmentInterface $attachment, UploadedFile $uploadedFile): void;
+    public function putFile(Volume $volume, AttachmentInterface $attachment, File $file): void;
 
     public function getFileInfo(Volume $volume, AttachmentInterface $attachment): FileInfo;
 

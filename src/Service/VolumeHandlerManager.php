@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
  * @method bool         exists(string $volumeName)
  * @method Volume       create(string $volumeName)
  * @method void         delete(string $volumeName, bool $recursive = false)
- * @method void         putFile(string $volumeName, AttachmentInterface $attachment, \Symfony\Component\HttpFoundation\File\UploadedFile $uploadedFile)
+ * @method void         putFile(string $volumeName, AttachmentInterface $attachment, \Symfony\Component\HttpFoundation\File\File $file)
  * @method \SplFileInfo getFileInfo(string $volumeName, AttachmentInterface $attachment)
  * @method void         deleteFile(string $volumeName, AttachmentInterface $attachment)
  * @method string       getFilePublicUrl(string $volumeName, AttachmentInterface $attachment)

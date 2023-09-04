@@ -6,7 +6,7 @@ use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 use Aws\S3\S3ClientInterface;
 use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -41,17 +41,17 @@ class S3VolumeHandler extends FileVolumeHandler
         }
     }
 
-    public function putFile(Volume $volume, AttachmentInterface $attachment, UploadedFile $uploadedFile): void
+    public function putFile(Volume $volume, AttachmentInterface $attachment, File $file): void
     {
         $bucket = $this->getBucketName($volume->getDsn());
         $result = $this->s3Client->createMultipartUpload([
             'Bucket' => $bucket,
             'Key' => $attachment->getFilename(),
-            'ContentType' => $uploadedFile->getMimeType(),
+            'ContentType' => $file->getMimeType(),
             'Metadata' => $attachment->getMetadata(),
         ]);
 
-        $stream = $uploadedFile->openFile();
+        $stream = $file->openFile();
         $uploadId = $result['UploadId'];
         $uploadPartNumber = 0;
         $uploadParts = [];
@@ -91,7 +91,7 @@ class S3VolumeHandler extends FileVolumeHandler
             'MultipartUpload' => $uploadParts,
         ]);
 
-        unlink($uploadedFile->getRealPath());
+        unlink($file->getRealPath());
     }
 
     public function getFilePublicUrl(Volume $volume, AttachmentInterface $attachment): string
