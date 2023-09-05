@@ -64,7 +64,7 @@ class DoctrinePass implements CompilerPassInterface
             ->addArgument($attachmentManagerServiceIds);
 
         if (1 === count($attachmentManagerServiceIds)) {
-            $container->setAlias(AttachmentManagerInterface::class, array_shift(array_values($attachmentManagerServiceIds))->__toString());
+            $container->setAlias(AttachmentManagerInterface::class, array_values($attachmentManagerServiceIds)[0]->__toString());
         }
     }
 }
