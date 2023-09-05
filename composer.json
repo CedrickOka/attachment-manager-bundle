@@ -24,7 +24,6 @@
 	},
 	"require" : {
 		"php": ">=8",
-		"aws/aws-sdk-php": "^3.263",
 		"coka/input-handler-bundle": "^1.5",
 		"symfony/config": "5.4.*",
 		"symfony/console": "5.4.*",
@@ -37,6 +36,7 @@
 		"symfony/yaml": "5.4.*"
 	},
 	"require-dev" : {
+		"aws/aws-sdk-php": "^3.263",
 		"doctrine/doctrine-bundle" : "^2.7",
 		"doctrine/doctrine-migrations-bundle" : "^3.2",
 		"doctrine/mongodb-odm-bundle" : "^4.5",
