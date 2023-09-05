@@ -47,7 +47,7 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
                 ],
                 'metadata' => [
                     'relatedObject' => 'acme_mongodb',
-                ]
+                ],
             ],
             ['file' => new UploadedFile($targetFile, 'logo.png', 'image/png')],
             ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']

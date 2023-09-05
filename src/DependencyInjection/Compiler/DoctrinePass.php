@@ -3,6 +3,7 @@
 namespace Oka\AttachmentManagerBundle\DependencyInjection\Compiler;
 
 use Doctrine\Persistence\ObjectManager;
+use Oka\AttachmentManagerBundle\Model\AttachmentManagerInterface;
 use Oka\AttachmentManagerBundle\OkaAttachmentManagerBundle;
 use Oka\AttachmentManagerBundle\Service\AttachmentManager;
 use Symfony\Component\DependencyInjection\Alias;
@@ -61,5 +62,9 @@ class DoctrinePass implements CompilerPassInterface
         $container
             ->getDefinition('oka_attachment_manager.attachment_manager_locator')
             ->addArgument($attachmentManagerServiceIds);
+
+        if (1 === count($attachmentManagerServiceIds)) {
+            $container->setAlias(AttachmentManagerInterface::class, $attachmentManagerServiceIds[0]->__toString());
+        }
     }
 }

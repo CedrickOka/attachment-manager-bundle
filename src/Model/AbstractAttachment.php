@@ -28,7 +28,7 @@ abstract class AbstractAttachment implements AttachmentInterface
      * @var \DateTimeInterface
      */
     protected $lastModified;
-    
+
     /**
      * @var \Oka\AttachmentManagerBundle\Volume\FileInfo
      */
@@ -86,16 +86,16 @@ abstract class AbstractAttachment implements AttachmentInterface
 
         return $this;
     }
-    
+
     public function getFileInfo(): FileInfo
     {
         return $this->fileInfo;
     }
-    
+
     public function setFileInfo(FileInfo $fileInfo): self
     {
         $this->fileInfo = $fileInfo;
-        
+
         return $this;
     }
 

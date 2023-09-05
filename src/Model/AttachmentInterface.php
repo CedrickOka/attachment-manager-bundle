@@ -24,8 +24,8 @@ interface AttachmentInterface
     public function getLastModified(): \DateTimeInterface;
 
     public function setLastModified(\DateTimeInterface $lastModified): self;
-    
+
     public function getFileInfo(): FileInfo;
-    
+
     public function setFileInfo(FileInfo $fileInfo): self;
 }

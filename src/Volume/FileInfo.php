@@ -33,12 +33,12 @@ class FileInfo
     {
         return $this->path;
     }
-    
+
     public function getSize(): int
     {
         return $this->size;
     }
-    
+
     public function getMimeType(): string
     {
         return $this->mimeType;

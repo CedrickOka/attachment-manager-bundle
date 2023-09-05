@@ -3,10 +3,10 @@
 namespace Oka\AttachmentManagerBundle\Model;
 
 use Doctrine\Common\EventSubscriber;
-use Oka\AttachmentManagerBundle\Reflection\ClassAnalyzer;
-use Oka\AttachmentManagerBundle\Traits\Attacheable;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Oka\AttachmentManagerBundle\Reflection\ClassAnalyzer;
 use Oka\AttachmentManagerBundle\Service\VolumeHandlerManager;
+use Oka\AttachmentManagerBundle\Traits\Attacheable;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -27,7 +27,7 @@ abstract class AbstractDoctrineListener implements EventSubscriber
         $this->volumeHandlerManager = $volumeHandlerManager;
         $this->classAnalyser = new ClassAnalyzer();
     }
-    
+
     public function postLoad(LifecycleEventArgs $eventArgs): void
     {
         $object = $eventArgs->getObject();

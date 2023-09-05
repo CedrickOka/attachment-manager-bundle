@@ -161,7 +161,7 @@ class Configuration implements ConfigurationInterface
                                         if (null === $v) {
                                             return false;
                                         }
-                                        
+
                                         return str_starts_with($v, '/') || str_ends_with($v, '/');
                                     })
                                     ->thenInvalid('The configuration value "oka_attachment_manager.'.$name.'.volumes.related_objects.directory" is not valid, it should not start and end with the character "/".')
@@ -175,7 +175,7 @@ class Configuration implements ConfigurationInterface
                                         if (null === $v) {
                                             return false;
                                         }
-                                        
+
                                         return (bool) preg_match('#/#', $v);
                                     })
                                     ->thenInvalid('The configuration value "oka_attachment_manager.'.$name.'.volumes.related_objects.prefix" is not valid because "%s" contains prohibited character "/".')
