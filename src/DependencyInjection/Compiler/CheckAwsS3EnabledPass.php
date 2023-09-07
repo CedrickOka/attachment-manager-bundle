@@ -12,8 +12,13 @@ class CheckAwsS3EnabledPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (true === $container->hasDefinition('oka_notifier_server.channel.firebase_handler') && false === class_exists('Aws\S3\S3Client')) {
-            throw new \LogicException('To use the S3 volume handler you have to install the "aws/aws-sdk-php".');
+        /** @var \Oka\AttachmentManagerBundle\Service\VolumeHandlerManager $volumeHandlerManager */
+        $volumeHandlerManager = $container->get('oka_attachment_manager.volume_handler_manager');
+
+        foreach ($volumeHandlerManager->getVolumes() as $volume) {
+            if (str_starts_with($volume['dsn'], 's3://') && false === class_exists('Aws\S3\S3Client')) {
+                throw new \LogicException('To use the S3 volume handler you have to install the "aws/aws-sdk-php".');
+            }
         }
     }
 }

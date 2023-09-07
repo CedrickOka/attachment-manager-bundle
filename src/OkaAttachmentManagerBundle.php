@@ -9,6 +9,7 @@ use Oka\AttachmentManagerBundle\EventListener\DoctrineMongoDBListener;
 use Oka\AttachmentManagerBundle\EventListener\DoctrineORMListener;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Oka\AttachmentManagerBundle\DependencyInjection\Compiler\CheckAwsS3EnabledPass;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -44,6 +45,7 @@ class OkaAttachmentManagerBundle extends Bundle
 
         $this->addRegisterMappingsPass($container);
 
+        $container->addCompilerPass(new CheckAwsS3EnabledPass());
         $container->addCompilerPass(new DoctrinePass());
     }
 

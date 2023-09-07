@@ -32,6 +32,11 @@ class VolumeHandlerManager
         $this->volumes = new ParameterBag($volumes);
     }
 
+    public function getVolumes(): ParameterBag
+    {
+        return $this->volumes;
+    }
+
     public function __call($method, $args)
     {
         if (false === in_array($method, ['exists', 'create', 'delete', 'putFile', 'getFileInfo', 'deleteFile', 'getFilePublicUrl'], SORT_REGULAR)) {
