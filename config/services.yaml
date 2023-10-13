@@ -38,6 +38,10 @@ services:
         class: Oka\AttachmentManagerBundle\Controller\AttachmentController
         arguments: ['@validator', '@serializer', '@oka_attachment_manager.attachment_manager_locator', []]
 
+    Oka\AttachmentManagerBundle\Serializer\AttachmentNormalizer:
+        public: true
+        alias: 'oka_attachment_manager.attachment.serializer.normalizer'
+
     Oka\AttachmentManagerBundle\Service\VolumeHandlerManager:
         public: true
         alias: 'oka_attachment_manager.volume_handler_manager'
