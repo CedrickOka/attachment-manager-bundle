@@ -57,9 +57,8 @@ class S3VolumeHandler extends FileVolumeHandler
         $uploadParts = [];
 
         try {
-            ++$uploadPartNumber;
-
             while (false === $stream->eof()) {
+                ++$uploadPartNumber;
                 $result = $this->s3Client->uploadPart([
                     'Bucket' => $bucket,
                     'Key' => $attachment->getFilename(),
