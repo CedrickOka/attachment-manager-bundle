@@ -32,6 +32,7 @@ class DoctrineMongoDBListener extends AbstractDoctrineListener
             'isCascadeRemove' => true,
             'orphanRemoval' => true,
             'storeAs' => ClassMetadata::REFERENCE_STORE_AS_DB_REF_WITH_DB,
+            'storeEmptyArray' => false,
         ]);
     }
 
