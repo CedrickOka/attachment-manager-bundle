@@ -25,7 +25,7 @@
 	"require" : {
 		"php": ">=8",
 		"coka/input-handler-bundle": "^1.5",
-		"symfony/cache": "^6.4",
+		"symfony/cache": "^5.4",
 		"symfony/config": "5.4.*",
 		"symfony/console": "5.4.*",
 		"symfony/dependency-injection": "5.4.*",
