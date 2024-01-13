@@ -14,7 +14,7 @@ class DoctrineORMListener extends AbstractDoctrineListener
 {
     public function loadClassMetadata(LoadClassMetadataEventArgs $event): void
     {
-        /** @var \Doctrine\ORM\Mapping\ClassMetadata $classMetadata */
+        /** @var ClassMetadata $classMetadata */
         $classMetadata = $event->getClassMetadata();
 
         /** @var \ReflectionClass $reflClass */

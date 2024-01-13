@@ -115,7 +115,7 @@ class S3VolumeHandler extends FileVolumeHandler
                     'Key' => $attachment->getFilename(),
                 ]
             ),
-            '+60 minutes'
+            '+1440 minutes'
         );
 
         return $presignedRequest->getUri();

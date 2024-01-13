@@ -11,7 +11,7 @@ use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
 trait Attacheable
 {
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      */
     protected $attachments;
 

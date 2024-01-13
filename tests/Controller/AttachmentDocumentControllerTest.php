@@ -80,6 +80,15 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
 
+        $this->client->request('GET', sprintf('/v1/rest/attachments/%s/acme_mongodb', $depends['id']));
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertEquals('s3', $content['volumeName']);
+        $this->assertEquals(['relatedObject' => 'acme_mongodb'], $content['metadata']);
+        $this->assertArrayHasKey('lastModified', $content);
+        $this->assertArrayHasKey('publicUrl', $content);
+
         return $content;
     }
 

@@ -16,7 +16,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('oka_attachment_manager');
-        /** @var \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode */
+        /** @var ArrayNodeDefinition $rootNode */
         $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
@@ -52,6 +52,10 @@ class Configuration implements ConfigurationInterface
                 ->thenInvalid('A related object uses an undefined volume name.')
             ->end()
             ->children()
+                ->scalarNode('cache_id')
+                    ->defaultValue('cache.app')
+                ->end()
+
                 ->scalarNode('prefix_separator')
                     ->defaultValue('.')
                 ->end()

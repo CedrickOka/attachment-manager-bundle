@@ -75,6 +75,7 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
     {
         $this->client->request('GET', sprintf('/v1/rest/attachments/%s/acme_orm', $depends['id']));
         $content = json_decode($this->client->getResponse()->getContent(), true);
+        dd($content);
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('file', $content['volumeName']);

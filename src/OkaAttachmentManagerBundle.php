@@ -4,12 +4,13 @@ namespace Oka\AttachmentManagerBundle;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use Doctrine\Bundle\MongoDBBundle\DependencyInjection\Compiler\DoctrineMongoDBMappingsPass;
+use Oka\AttachmentManagerBundle\DependencyInjection\Compiler\CachePoolServicePass;
+use Oka\AttachmentManagerBundle\DependencyInjection\Compiler\CheckAwsS3EnabledPass;
 use Oka\AttachmentManagerBundle\DependencyInjection\Compiler\DoctrinePass;
 use Oka\AttachmentManagerBundle\EventListener\DoctrineMongoDBListener;
 use Oka\AttachmentManagerBundle\EventListener\DoctrineORMListener;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Oka\AttachmentManagerBundle\DependencyInjection\Compiler\CheckAwsS3EnabledPass;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -46,6 +47,7 @@ class OkaAttachmentManagerBundle extends Bundle
         $this->addRegisterMappingsPass($container);
 
         $container->addCompilerPass(new CheckAwsS3EnabledPass());
+        $container->addCompilerPass(new CachePoolServicePass());
         $container->addCompilerPass(new DoctrinePass());
     }
 

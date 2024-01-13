@@ -4,6 +4,7 @@ namespace Oka\AttachmentManagerBundle\Service;
 
 use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
 use Oka\AttachmentManagerBundle\Volume\Volume;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
@@ -22,14 +23,17 @@ class VolumeHandlerManager
     private $volumeHandlerFactories;
 
     /**
-     * @var \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag
+     * @var ParameterBag
      */
     private $volumes;
 
-    public function __construct(iterable $volumeHandlerFactories, array $volumes)
+    private $cachePool;
+
+    public function __construct(iterable $volumeHandlerFactories, array $volumes, CacheItemPoolInterface $cachePool = null)
     {
         $this->volumeHandlerFactories = $volumeHandlerFactories;
         $this->volumes = new ParameterBag($volumes);
+        $this->cachePool = $cachePool;
     }
 
     public function getVolumes(): ParameterBag
@@ -71,6 +75,19 @@ class VolumeHandlerManager
 
         if (false === isset($volumeHandler)) {
             throw new \LogicException(sprintf('No volume handler configured for volume dsn "%s".', $args[0]->getDsn()));
+        }
+
+        if ('getFilePublicUrl' === $method) {
+            /** @var \Psr\Cache\CacheItemInterface $publicUrlItem */
+            $publicUrlItem = $this->cachePool->getItem(sprintf('oka_attachment_manager.attachment.%s.public_url.%s', $args[0]->getName(), md5($args[1]->getFilename())));
+            $publicUrlItem->expiresAfter(86400);
+
+            if (false === $publicUrlItem->isHit()) {
+                $publicUrlItem->set($volumeHandler->{$method}(...$args));
+                $this->cachePool->saveDeferred($publicUrlItem);
+            }
+
+            return $publicUrlItem->get();
         }
 
         return $volumeHandler->{$method}(...$args);

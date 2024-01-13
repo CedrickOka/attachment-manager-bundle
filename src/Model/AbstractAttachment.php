@@ -30,7 +30,7 @@ abstract class AbstractAttachment implements AttachmentInterface
     protected $lastModified;
 
     /**
-     * @var \Oka\AttachmentManagerBundle\Volume\FileInfo
+     * @var FileInfo
      */
     protected $fileInfo;
 

@@ -24,7 +24,7 @@ services:
 
     oka_attachment_manager.volume_handler_manager:
         class: Oka\AttachmentManagerBundle\Service\VolumeHandlerManager
-        arguments: [!tagged_iterator oka_attachment_manager.volume_handler.factory, []]
+        arguments: [!tagged_iterator oka_attachment_manager.volume_handler.factory, [], null]
 
     oka_attachment_manager.attachment_manager_locator:
         class: Symfony\Component\DependencyInjection\ServiceLocator

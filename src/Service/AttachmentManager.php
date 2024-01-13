@@ -59,7 +59,7 @@ class AttachmentManager implements AttachmentManagerInterface
             throw new \InvalidArgumentException(sprintf('The related object with the identifier "%s" is not found.', $relatedObjectIdentifier));
         }
 
-        /** @var \Oka\AttachmentManagerBundle\Model\AttachmentInterface $attachment */
+        /** @var AttachmentInterface $attachment */
         $attachment = new $this->className();
         $attachment->setVolumeName($relatedObjectConfig['volume_used']);
         $attachment->setMetadata($metadata);

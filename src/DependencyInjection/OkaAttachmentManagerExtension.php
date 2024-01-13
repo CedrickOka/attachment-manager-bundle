@@ -52,6 +52,8 @@ class OkaAttachmentManagerExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $loader->load('services.yaml');
 
+        $container->setParameter('oka_attachment_manager.cache_id', $config['cache_id']);
+
         $container
             ->getDefinition('oka_attachment_manager.is_related_object_name_validator')
             ->replaceArgument(0, array_keys($relatedObjectDBDriverMapping));
