@@ -3,7 +3,6 @@
 namespace Oka\AttachmentManagerBundle\Model;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Oka\AttachmentManagerBundle\Reflection\ClassAnalyzer;
 use Oka\AttachmentManagerBundle\Service\VolumeHandlerManager;
 use Oka\AttachmentManagerBundle\Traits\Attacheable;
@@ -26,17 +25,6 @@ abstract class AbstractDoctrineListener implements EventSubscriber
         $this->className = $className;
         $this->volumeHandlerManager = $volumeHandlerManager;
         $this->classAnalyser = new ClassAnalyzer();
-    }
-
-    public function postLoad(LifecycleEventArgs $eventArgs): void
-    {
-        $object = $eventArgs->getObject();
-
-        if (!$object instanceof AttachmentInterface) {
-            return;
-        }
-
-        $object->setFileInfo($this->volumeHandlerManager->getFileInfo($object->getVolumeName(), $object));
     }
 
     protected function isObjectSupported(\ReflectionClass $reflClass, bool $recursive = true): bool

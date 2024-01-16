@@ -10,13 +10,13 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  *
- * @method bool         exists(string $volumeName)
- * @method Volume       create(string $volumeName)
- * @method void         delete(string $volumeName, bool $recursive = false)
- * @method void         putFile(string $volumeName, AttachmentInterface $attachment, \Symfony\Component\HttpFoundation\File\File $file)
- * @method \SplFileInfo getFileInfo(string $volumeName, AttachmentInterface $attachment)
- * @method void         deleteFile(string $volumeName, AttachmentInterface $attachment)
- * @method string       getFilePublicUrl(string $volumeName, AttachmentInterface $attachment)
+ * @method bool                                         exists(string $volumeName)
+ * @method \Oka\AttachmentManagerBundle\Volume\Volume   create(string $volumeName)
+ * @method void                                         delete(string $volumeName, bool $recursive = false)
+ * @method void                                         putFile(AttachmentInterface $attachment, \Symfony\Component\HttpFoundation\File\File $file)
+ * @method \Oka\AttachmentManagerBundle\Volume\FileInfo getFileInfo(AttachmentInterface $attachment)
+ * @method void                                         deleteFile(AttachmentInterface $attachment)
+ * @method string                                       getFilePublicUrl(AttachmentInterface $attachment)
  */
 class VolumeHandlerManager
 {
@@ -46,17 +46,18 @@ class VolumeHandlerManager
         if (false === in_array($method, ['exists', 'create', 'delete', 'putFile', 'getFileInfo', 'deleteFile', 'getFilePublicUrl'], SORT_REGULAR)) {
             throw new \BadMethodCallException(sprintf('The method "%s" is not available.', $method));
         }
+        
+        if (true === in_array($method, ['exists', 'create', 'delete'])) {
+            if (!is_string($args[0])) {
+                throw new \InvalidArgumentException(sprintf('The magic method require first argument must be type "string".', Volume::class));
+            }
+        } else {
+            if (!$args[0] instanceof AttachmentInterface) {
+                throw new \InvalidArgumentException(sprintf('The magic method require first argument must be type "%s" class.', AttachmentInterface::class));
+            }
 
-        if (!is_string($args[0])) {
-            throw new \InvalidArgumentException(sprintf('The magic method require first argument must be type "string".', Volume::class));
-        }
-
-        if (false === in_array($method, ['exists', 'create', 'delete']) && !$args[1] instanceof AttachmentInterface) {
-            throw new \InvalidArgumentException(sprintf('The magic method require second argument must be type "%s" class.', AttachmentInterface::class));
-        }
-
-        if (!$this->volumes->has($args[0])) {
-            throw new \InvalidArgumentException(sprintf('The volume with the name "%s" does not exist.', $args[0]));
+            array_unshift($args, $args[0]->getVolumeName());
+            $args = array_values($args);
         }
 
         $configuration = $this->volumes->get($args[0]);
@@ -77,19 +78,19 @@ class VolumeHandlerManager
             throw new \LogicException(sprintf('No volume handler configured for volume dsn "%s".', $args[0]->getDsn()));
         }
 
-        if ('getFilePublicUrl' === $method) {
-            /** @var \Psr\Cache\CacheItemInterface $publicUrlItem */
-            $publicUrlItem = $this->cachePool->getItem(sprintf('oka_attachment_manager.attachment.%s.public_url.%s', $args[0]->getName(), md5($args[1]->getFilename())));
-            $publicUrlItem->expiresAfter(86400);
-
-            if (false === $publicUrlItem->isHit()) {
-                $publicUrlItem->set($volumeHandler->{$method}(...$args));
-                $this->cachePool->saveDeferred($publicUrlItem);
-            }
-
-            return $publicUrlItem->get();
+        if ('getFileInfo' !== $method && 'getFilePublicUrl' !== $method) {
+            return $volumeHandler->{$method}(...$args);
         }
 
-        return $volumeHandler->{$method}(...$args);
+        /** @var \Psr\Cache\CacheItemInterface $cacheItem */
+        $cacheItem = $this->cachePool->getItem(sprintf('oka_attachment_manager.%s.%s.%s.%s', strtolower($args[1]->getVolumeName()), strtolower($method), md5($args[1]->getFilename()), $args[1]->getLastModified()->getTimestamp()));
+        $cacheItem->expiresAfter(86400);
+
+        if (false === $cacheItem->isHit()) {
+            $cacheItem->set($volumeHandler->{$method}(...$args));
+            $this->cachePool->saveDeferred($cacheItem);
+        }
+
+        return $cacheItem->get();
     }
 }

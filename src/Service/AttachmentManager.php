@@ -88,7 +88,9 @@ class AttachmentManager implements AttachmentManagerInterface
         /** @var UploadedFileEvent $event */
         $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $file));
 
-        $this->volumeHandlerManager->putFile($relatedObjectConfig['volume_used'], $attachment, $event->getUploadedFile());
+        $this->volumeHandlerManager->putFile($attachment, $event->getUploadedFile());
+
+        $attachment->setLastModified();
         $this->objectManager->flush();
 
         return $attachment;
@@ -108,9 +110,10 @@ class AttachmentManager implements AttachmentManagerInterface
             /** @var UploadedFileEvent $event */
             $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $file));
 
-            $this->volumeHandlerManager->putFile($attachment->getVolumeName(), $attachment, $event->getUploadedFile());
+            $this->volumeHandlerManager->putFile($attachment, $event->getUploadedFile());
         }
 
+        $attachment->setLastModified();
         $this->objectManager->flush();
 
         return $attachment;
@@ -118,7 +121,7 @@ class AttachmentManager implements AttachmentManagerInterface
 
     public function delete(AttachmentInterface $attachment): void
     {
-        $this->volumeHandlerManager->deleteFile($attachment->getVolumeName(), $attachment);
+        $this->volumeHandlerManager->deleteFile($attachment);
         $this->objectManager->remove($attachment);
         $this->objectManager->flush();
     }

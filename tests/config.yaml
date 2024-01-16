@@ -16,8 +16,8 @@ framework:
         # Other options include:
 
         # Redis
-        #app: cache.adapter.redis
-        #default_redis_provider: redis://localhost
+        app: cache.adapter.redis
+        default_redis_provider: redis://localhost
 
         # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
         #app: cache.adapter.apcu
@@ -76,6 +76,18 @@ oka_attachment_manager:
             options: []
         s3:
             dsn: s3://acme
+            public_url: '%env(OBJECT_STORAGE_PUBLIC_URL)%'
+            options:
+                version: latest
+                region: africa
+                use_path_style_endpoint: true
+                endpoint: '%env(OBJECT_STORAGE_URL)%'
+                credentials:
+                    key: '%env(OBJECT_STORAGE_ROOT_USER)%'
+                    secret: '%env(OBJECT_STORAGE_ROOT_PASSWORD)%'
+                #debug: '%kernel.debug%'
+        test:
+            dsn: s3://test
             public_url: '%env(OBJECT_STORAGE_PUBLIC_URL)%'
             options:
                 version: latest

@@ -29,7 +29,7 @@ class AttachmentNormalizer implements ContextAwareNormalizerInterface, Cacheable
     public function normalize($object, $format = null, array $context = []): array
     {
         $data = $this->normalizer->normalize($object, $format, $context);
-        $data['publicUrl'] = $this->volumeHandlerManager->getFilePublicUrl($object->getVolumeName(), $object);
+        $data['publicUrl'] = $this->volumeHandlerManager->getFilePublicUrl($object);
 
         return $data;
     }

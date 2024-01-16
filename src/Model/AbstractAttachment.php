@@ -29,11 +29,6 @@ abstract class AbstractAttachment implements AttachmentInterface
      */
     protected $lastModified;
 
-    /**
-     * @var FileInfo
-     */
-    protected $fileInfo;
-
     public function __construct()
     {
         $this->metadata = [];
@@ -80,27 +75,10 @@ abstract class AbstractAttachment implements AttachmentInterface
         return $this->lastModified;
     }
 
-    public function setLastModified(\DateTimeInterface $lastModified): self
+    public function setLastModified(\DateTimeInterface $lastModified = null): self
     {
-        $this->lastModified = $lastModified;
+        $this->lastModified = $lastModified ?? new \DateTime();
 
         return $this;
-    }
-
-    public function getFileInfo(): FileInfo
-    {
-        return $this->fileInfo;
-    }
-
-    public function setFileInfo(FileInfo $fileInfo): self
-    {
-        $this->fileInfo = $fileInfo;
-
-        return $this;
-    }
-
-    public function prePersist(): void
-    {
-        $this->lastModified = new \DateTime();
     }
 }

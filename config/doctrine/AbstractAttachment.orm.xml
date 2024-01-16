@@ -18,8 +18,9 @@
             <unique-constraint name="filename_idx" columns="volume_name,filename"/>
         </unique-constraints>
 
-        <lifecycle-callbacks>
-        	<lifecycle-callback type="prePersist" method="prePersist" />
-    	</lifecycle-callbacks>
+<!--         <lifecycle-callbacks>
+        	<lifecycle-callback type="prePersist" method="setLastModified" />
+        	<lifecycle-callback type="preUpdate" method="setLastModified" />
+    	</lifecycle-callbacks> -->
     </mapped-superclass>
 </doctrine-mapping>

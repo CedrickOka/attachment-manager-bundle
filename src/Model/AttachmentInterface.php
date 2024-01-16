@@ -2,8 +2,6 @@
 
 namespace Oka\AttachmentManagerBundle\Model;
 
-use Oka\AttachmentManagerBundle\Volume\FileInfo;
-
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
@@ -23,9 +21,5 @@ interface AttachmentInterface
 
     public function getLastModified(): \DateTimeInterface;
 
-    public function setLastModified(\DateTimeInterface $lastModified): self;
-
-    public function getFileInfo(): FileInfo;
-
-    public function setFileInfo(FileInfo $fileInfo): self;
+    public function setLastModified(\DateTimeInterface $lastModified = null): self;
 }

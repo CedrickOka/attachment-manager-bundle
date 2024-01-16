@@ -40,7 +40,6 @@ class DoctrineMongoDBListener extends AbstractDoctrineListener
     {
         return [
             Events::loadClassMetadata,
-            Events::postLoad,
         ];
     }
 }
