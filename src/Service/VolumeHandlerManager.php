@@ -85,7 +85,7 @@ class VolumeHandlerManager
         /** @var \Psr\Cache\CacheItemInterface $cacheItem */
         $cacheItem = $this->cachePool->getItem(sprintf('oka_attachment_manager.%s.%s.%s.%s', strtolower($args[1]->getVolumeName()), strtolower($method), md5($args[1]->getFilename()), $args[1]->getLastModified()->getTimestamp()));
 
-        if (false === $cacheItem->isHit()) {
+        if (!$cacheItem->isHit()) {
             $cacheItem->set($volumeHandler->{$method}(...$args));
             $cacheItem->expiresAfter(86400);
             $this->cachePool->saveDeferred($cacheItem);

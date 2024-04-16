@@ -11,10 +11,11 @@ class UploadedFileEvent extends Event
     private $attachment;
     private $file;
 
-    public function __construct(AttachmentInterface $attachment, File $file)
+    public function __construct(AttachmentInterface $attachment, File $file, mixed $relatedObject = null)
     {
         $this->attachment = $attachment;
         $this->file = $file;
+        $this->relatedObject = $relatedObject;
     }
 
     public function getAttachment(): AttachmentInterface
@@ -32,5 +33,10 @@ class UploadedFileEvent extends Event
         $this->file = $file;
 
         return $this;
+    }
+    
+    public function getRelatedObject(): ?mixed
+    {
+        return $this->relatedObject;
     }
 }

@@ -86,7 +86,7 @@ class AttachmentManager implements AttachmentManagerInterface
         }
 
         /** @var UploadedFileEvent $event */
-        $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $file));
+        $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $file, $relatedObject));
 
         $this->volumeHandlerManager->putFile($attachment, $event->getUploadedFile());
 
