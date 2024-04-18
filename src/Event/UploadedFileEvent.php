@@ -9,12 +9,13 @@ use Symfony\Contracts\EventDispatcher\Event;
 class UploadedFileEvent extends Event
 {
     private $attachment;
-    private $file;
+    private $uploadedFile;
+    private $relatedObject;
 
-    public function __construct(AttachmentInterface $attachment, File $file, mixed $relatedObject = null)
+    public function __construct(AttachmentInterface $attachment, File $uploadedFile, mixed $relatedObject)
     {
         $this->attachment = $attachment;
-        $this->file = $file;
+        $this->uploadedFile = $uploadedFile;
         $this->relatedObject = $relatedObject;
     }
 
@@ -25,17 +26,17 @@ class UploadedFileEvent extends Event
 
     public function getUploadedFile(): File
     {
-        return $this->file;
+        return $this->uploadedFile;
     }
 
-    public function setUploadedFile(File $file): self
+    public function setUploadedFile(File $uploadedFile): self
     {
-        $this->file = $file;
+        $this->uploadedFile = $uploadedFile;
 
         return $this;
     }
 
-    public function getRelatedObject(): ?mixed
+    public function getRelatedObject(): mixed
     {
         return $this->relatedObject;
     }
