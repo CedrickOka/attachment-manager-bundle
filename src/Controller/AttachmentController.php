@@ -135,7 +135,7 @@ class AttachmentController extends AbstractController
         return $this->attachmentManagerLocator->get($this->relatedObjectDBDriverMapping[$relatedObjectName]);
     }
 
-    private function validate($data, Constraint $constraint = null, array $groups = []): ?Response
+    private function validate($data, ?Constraint $constraint = null, array $groups = []): ?Response
     {
         /** @var \Symfony\Component\Validator\ConstraintViolationListInterface $errors */
         $errors = $this->validator->validate($data, $constraint, $groups);

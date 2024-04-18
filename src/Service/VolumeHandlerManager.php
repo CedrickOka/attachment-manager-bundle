@@ -29,7 +29,7 @@ class VolumeHandlerManager
 
     private $cachePool;
 
-    public function __construct(iterable $volumeHandlerFactories, array $volumes, CacheItemPoolInterface $cachePool = null)
+    public function __construct(iterable $volumeHandlerFactories, array $volumes, ?CacheItemPoolInterface $cachePool = null)
     {
         $this->volumeHandlerFactories = $volumeHandlerFactories;
         $this->volumes = new ParameterBag($volumes);
@@ -46,7 +46,7 @@ class VolumeHandlerManager
         if (false === in_array($method, ['exists', 'create', 'delete', 'putFile', 'getFileInfo', 'deleteFile', 'getFilePublicUrl'], SORT_REGULAR)) {
             throw new \BadMethodCallException(sprintf('The method "%s" is not available.', $method));
         }
-        
+
         if (true === in_array($method, ['exists', 'create', 'delete'])) {
             if (!is_string($args[0])) {
                 throw new \InvalidArgumentException(sprintf('The magic method require first argument must be type "string".', Volume::class));

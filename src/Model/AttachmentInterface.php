@@ -21,5 +21,5 @@ interface AttachmentInterface
 
     public function getLastModified(): \DateTimeInterface;
 
-    public function setLastModified(\DateTimeInterface $lastModified = null): self;
+    public function setLastModified(?\DateTimeInterface $lastModified = null): self;
 }

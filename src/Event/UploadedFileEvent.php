@@ -34,7 +34,7 @@ class UploadedFileEvent extends Event
 
         return $this;
     }
-    
+
     public function getRelatedObject(): ?mixed
     {
         return $this->relatedObject;

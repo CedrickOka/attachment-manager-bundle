@@ -78,7 +78,7 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
         $this->assertEquals('s3', $content['volumeName']);
         $this->assertEquals(['relatedObject' => 'acme_mongodb'], $content['metadata']);
         $this->assertEquals($depends['lastModified'], $content['lastModified']);
-        $this->assertEquals($depends['publicUrl'], $content['publicUrl']);        
+        $this->assertEquals($depends['publicUrl'], $content['publicUrl']);
 
         return $content;
     }

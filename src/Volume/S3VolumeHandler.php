@@ -93,6 +93,43 @@ class S3VolumeHandler extends FileVolumeHandler
         unlink($file->getRealPath());
     }
 
+    //     public function createFileUploadForm(Volume $volume, AttachmentInterface $attachment, string $expiresAt = null): FileUploadForm
+    //     {
+    //         $belongsToPolicyCondition = [];
+    //         $formInputs = [
+    //             'Content-Type' => $attachment->getMimeType(),
+    //             'key' => $attachment->getFilename(),
+    //             'acl' => 'private',
+    //             'X-Amz-Meta-Document-Type' => $attachment->getType(),
+    //         ];
+
+    //         foreach ($attachment->getMetadata() as $name => $value) {
+    //             $formInputs[sprintf('X-Amz-Meta-%s', $name)] = $value;
+
+    //             if ('belongs-to' === strtolower($name)) {
+    //                 $belongsToPolicyCondition = ['X-Amz-Meta-Belongs-To' => $value];
+    //             }
+    //         }
+
+    //         $postObject = new \Aws\S3\PostObjectV4(
+    //             $this->objectStorage,
+    //             $bucket,
+    //             $formInputs,
+    //             [
+    //                 ['eq', '$key', $attachment->getFilename()],
+    //                 ['eq', '$acl' => 'private'],
+    //                 $belongsToPolicyCondition,
+    //                 ['X-Amz-Meta-Document-Type' => $attachment->getType()],
+    //             ],
+    //             $expiresAt ?? date('c', time() + 3600)
+    //             );
+
+    //         return [
+    //             'attributes' => $postObject->getFormAttributes(),
+    //             'inputs' => $postObject->getFormInputs(),
+    //         ];
+    //     }
+
     public function getFilePublicUrl(Volume $volume, AttachmentInterface $attachment): string
     {
         if (!isset($this->cachedPublicS3Client[$volume->getPublicUrl()])) {

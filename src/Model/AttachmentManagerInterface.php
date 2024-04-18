@@ -17,9 +17,9 @@ interface AttachmentManagerInterface
 
     public function find($id): ?AttachmentInterface;
 
-    public function findBy(array $criteria, array $orderBy = null, int $limit = null, int $offset = null): array;
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array;
 
-    public function findOneBy(array $criteria, array $orderBy = null): array;
+    public function findOneBy(array $criteria, ?array $orderBy = null): array;
 
-    public function findAll(array $orderBy = null): array;
+    public function findAll(?array $orderBy = null): array;
 }

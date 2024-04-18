@@ -2,8 +2,6 @@
 
 namespace Oka\AttachmentManagerBundle\Model;
 
-use Oka\AttachmentManagerBundle\Volume\FileInfo;
-
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
@@ -75,7 +73,7 @@ abstract class AbstractAttachment implements AttachmentInterface
         return $this->lastModified;
     }
 
-    public function setLastModified(\DateTimeInterface $lastModified = null): self
+    public function setLastModified(?\DateTimeInterface $lastModified = null): self
     {
         $this->lastModified = $lastModified ?? new \DateTime();
 

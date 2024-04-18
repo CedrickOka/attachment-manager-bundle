@@ -12,7 +12,7 @@ class Volume
     private $options;
     private $publicUrl;
 
-    public function __construct(string $name, string $dsn, array $options = [], string $publicUrl = null)
+    public function __construct(string $name, string $dsn, array $options = [], ?string $publicUrl = null)
     {
         $this->name = $name;
         $this->dsn = $dsn;

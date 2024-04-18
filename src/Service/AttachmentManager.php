@@ -96,7 +96,7 @@ class AttachmentManager implements AttachmentManagerInterface
         return $attachment;
     }
 
-    public function update(AttachmentInterface $attachment, File $file = null, array $metadata = []): AttachmentInterface
+    public function update(AttachmentInterface $attachment, ?File $file = null, array $metadata = []): AttachmentInterface
     {
         if (!empty($metadata)) {
             $attachment->setMetadata($metadata);
@@ -131,17 +131,17 @@ class AttachmentManager implements AttachmentManagerInterface
         return $this->objectRepository->find($id);
     }
 
-    public function findBy(array $criteria, array $orderBy = null, int $limit = null, int $offset = null): array
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
         return $this->objectRepository->findBy($criteria, $orderBy, $limit, $offset);
     }
 
-    public function findOneBy(array $criteria, array $orderBy = null): array
+    public function findOneBy(array $criteria, ?array $orderBy = null): array
     {
         return $this->findBy($criteria, $orderBy, 1, 0);
     }
 
-    public function findAll(array $orderBy = null): array
+    public function findAll(?array $orderBy = null): array
     {
         return $this->findBy([], $orderBy);
     }
