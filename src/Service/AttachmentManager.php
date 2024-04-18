@@ -46,7 +46,7 @@ class AttachmentManager implements AttachmentManagerInterface
         $this->objectRepository = $objectManager->getRepository($className);
     }
 
-    public function create(string $relatedObjectName, string $relatedObjectIdentifier, File $file, array $metadata = []): AttachmentInterface
+    public function create(string $relatedObjectName, string $relatedObjectIdentifier, File $file, array $metadata = [], bool $andFlush = true): AttachmentInterface
     {
         if (!$this->relatedObjets->has($relatedObjectName)) {
             throw new \InvalidArgumentException(sprintf('The related object with the name "%s" does not exist.', $relatedObjectName));
@@ -91,7 +91,10 @@ class AttachmentManager implements AttachmentManagerInterface
         $this->volumeHandlerManager->putFile($attachment, $event->getUploadedFile());
 
         $attachment->setLastModified();
-        $this->objectManager->flush();
+
+        if ($andFlush) {
+            $this->objectManager->flush();
+        }
 
         return $attachment;
     }
