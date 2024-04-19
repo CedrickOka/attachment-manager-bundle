@@ -12,7 +12,7 @@ class UploadedFileEvent extends Event
     private $uploadedFile;
     private $relatedObject;
 
-    public function __construct(AttachmentInterface $attachment, File $uploadedFile, mixed $relatedObject)
+    public function __construct(AttachmentInterface $attachment, File $uploadedFile, mixed $relatedObject = null)
     {
         $this->attachment = $attachment;
         $this->uploadedFile = $uploadedFile;

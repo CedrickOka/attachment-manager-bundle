@@ -3,7 +3,7 @@
 namespace Oka\AttachmentManagerBundle\EventListener;
 
 use Doctrine\ORM\Events;
-use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Oka\AttachmentManagerBundle\Model\AbstractDoctrineListener;
 
 /**
@@ -21,10 +21,14 @@ class DoctrineORMListener extends AbstractDoctrineListener
 
     protected function doLoadClassMetadata(ClassMetadata $classMetadata): void
     {
+        if (!$classMetadata instanceof \Doctrine\ORM\Mapping\ClassMetadata) {
+            return;
+        }
+
         $classMetadata->mapManyToMany([
             'fieldName' => 'attachments',
             'targetEntity' => $this->className,
-            'fetch' => ClassMetadata::FETCH_EXTRA_LAZY,
+            'fetch' => \Doctrine\ORM\Mapping\ClassMetadata::FETCH_EXTRA_LAZY,
             'joinTable' => [
                 'name' => sprintf('%s_attachment', $classMetadata->getTableName()),
                 'joinColumns' => [
