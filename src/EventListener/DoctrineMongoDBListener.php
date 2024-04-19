@@ -2,7 +2,6 @@
 
 namespace Oka\AttachmentManagerBundle\EventListener;
 
-use Doctrine\ODM\MongoDB\Event\LoadClassMetadataEventArgs;
 use Doctrine\ODM\MongoDB\Events;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Oka\AttachmentManagerBundle\Model\AbstractDoctrineListener;
@@ -12,20 +11,16 @@ use Oka\AttachmentManagerBundle\Model\AbstractDoctrineListener;
  */
 class DoctrineMongoDBListener extends AbstractDoctrineListener
 {
-    public function loadClassMetadata(LoadClassMetadataEventArgs $event): void
+    public function getSubscribedEvents(): array
     {
-        /** @var ClassMetadata $classMetadata */
-        $classMetadata = $event->getClassMetadata();
+        return [
+            ...parent::getSubscribedEvents(),
+            Events::loadClassMetadata,
+        ];
+    }
 
-        /** @var \ReflectionClass $reflClass */
-        if (null === ($reflClass = $classMetadata->reflClass)) {
-            return;
-        }
-
-        if (false === $this->isObjectSupported($reflClass)) {
-            return;
-        }
-
+    protected function doLoadClassMetadata(ClassMetadata $classMetadata): void
+    {
         $classMetadata->mapManyReference([
             'fieldName' => 'attachments',
             'targetDocument' => $this->className,
@@ -34,12 +29,5 @@ class DoctrineMongoDBListener extends AbstractDoctrineListener
             'storeAs' => ClassMetadata::REFERENCE_STORE_AS_DB_REF_WITH_DB,
             'storeEmptyArray' => false,
         ]);
-    }
-
-    public function getSubscribedEvents(): array
-    {
-        return [
-            Events::loadClassMetadata,
-        ];
     }
 }

@@ -4,7 +4,6 @@ namespace Oka\AttachmentManagerBundle\EventListener;
 
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\Persistence\Event\LoadClassMetadataEventArgs;
 use Oka\AttachmentManagerBundle\Model\AbstractDoctrineListener;
 
 /**
@@ -12,20 +11,16 @@ use Oka\AttachmentManagerBundle\Model\AbstractDoctrineListener;
  */
 class DoctrineORMListener extends AbstractDoctrineListener
 {
-    public function loadClassMetadata(LoadClassMetadataEventArgs $event): void
+    public function getSubscribedEvents(): array
     {
-        /** @var ClassMetadata $classMetadata */
-        $classMetadata = $event->getClassMetadata();
+        return [
+            ...parent::getSubscribedEvents(),
+            Events::loadClassMetadata,
+        ];
+    }
 
-        /** @var \ReflectionClass $reflClass */
-        if (null === ($reflClass = $classMetadata->reflClass)) {
-            return;
-        }
-
-        if (false === $this->isObjectSupported($reflClass)) {
-            return;
-        }
-
+    protected function doLoadClassMetadata(ClassMetadata $classMetadata): void
+    {
         $classMetadata->mapManyToMany([
             'fieldName' => 'attachments',
             'targetEntity' => $this->className,
@@ -50,12 +45,5 @@ class DoctrineORMListener extends AbstractDoctrineListener
                 ],
             ],
         ]);
-    }
-
-    public function getSubscribedEvents(): array
-    {
-        return [
-            Events::loadClassMetadata,
-        ];
     }
 }

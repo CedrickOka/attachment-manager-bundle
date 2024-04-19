@@ -99,7 +99,7 @@ class AttachmentManager implements AttachmentManagerInterface
         return $attachment;
     }
 
-    public function update(AttachmentInterface $attachment, ?File $file = null, array $metadata = []): AttachmentInterface
+    public function update(AttachmentInterface $attachment, ?File $file = null, array $metadata = [], bool $andFlush = true): AttachmentInterface
     {
         if (!empty($metadata)) {
             $attachment->setMetadata($metadata);
@@ -117,14 +117,16 @@ class AttachmentManager implements AttachmentManagerInterface
         }
 
         $attachment->setLastModified();
-        $this->objectManager->flush();
+
+        if ($andFlush) {
+            $this->objectManager->flush();
+        }
 
         return $attachment;
     }
 
     public function delete(AttachmentInterface $attachment): void
     {
-        $this->volumeHandlerManager->deleteFile($attachment);
         $this->objectManager->remove($attachment);
         $this->objectManager->flush();
     }
