@@ -78,6 +78,10 @@ class Configuration implements ConfigurationInterface
                                 ->defaultNull()
                             ->end()
 
+                            ->integerNode('cache_item_ttl')
+                                ->defaultValue(86400)
+                            ->end()
+
                             ->arrayNode('options')
                                 ->treatNullLike([])
                                 ->ignoreExtraKeys(false)

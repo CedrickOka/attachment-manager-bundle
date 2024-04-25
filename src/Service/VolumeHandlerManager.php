@@ -87,7 +87,7 @@ class VolumeHandlerManager
 
         if (!$cacheItem->isHit()) {
             $cacheItem->set($volumeHandler->{$method}(...$args));
-            $cacheItem->expiresAfter(86400);
+            $cacheItem->expiresAfter($configuration['cache_item_ttl']);
             $this->cachePool->saveDeferred($cacheItem);
         }
 
