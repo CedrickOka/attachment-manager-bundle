@@ -29,7 +29,7 @@ trait Attacheable
         return $this;
     }
 
-    public function setAttachments(iterable $attachments): Collection
+    public function setAttachments(iterable $attachments): self
     {
         $this->attachments = $attachments;
 
