@@ -68,6 +68,30 @@ abstract class AbstractAttachment implements AttachmentInterface
         return $this;
     }
 
+    public function hasMeta(string $name): bool
+    {
+        return isset($this->metadata[$name]);
+    }
+
+    public function getMeta(string $name, mixed $defaultValue = null): mixed
+    {
+        return $this->metadata[$name] ?? $defaultValue;
+    }
+
+    public function putMeta(string $name, mixed $value): self
+    {
+        $this->metadata[$name] = $value;
+
+        return $this;
+    }
+
+    public function removeMeta(string $name): self
+    {
+        unset($this->metadata[$name]);
+
+        return $this;
+    }
+
     public function getLastModified(): \DateTimeInterface
     {
         return $this->lastModified;

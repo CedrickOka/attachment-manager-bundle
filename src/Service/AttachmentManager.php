@@ -150,4 +150,19 @@ class AttachmentManager implements AttachmentManagerInterface
     {
         return $this->findBy([], $orderBy);
     }
+    
+    private function createFilename(string $relatedObjectIdentifier, array $relatedObjectConfig, File $file): string
+    {
+        $mimeTypes = new MimeTypes();
+        $extensions = $mimeTypes->getExtensions($file->getMimeType());
+
+        return sprintf(
+            '%s%s%s%s%s',
+            $relatedObjectConfig['directory'] ?? $relatedObjectIdentifier,
+            \DIRECTORY_SEPARATOR,
+            isset($relatedObjectConfig['prefix']) ? sprintf('%s%s', $relatedObjectConfig['prefix'], $this->prefixSeparator) : '',
+            Uuid::v4()->__toString(),
+            isset($extensions[0]) ? '.'.$extensions[0] : ''
+        );
+    }
 }
