@@ -39,8 +39,8 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
         $em->flush();
 
         $fs = new Filesystem();
-        $targetFile = sprintf('%s/../assets/logo.test.png', __DIR__);
-        $fs->copy(sprintf('%s/../assets/logo.png', __DIR__), $targetFile);
+        $targetFile = sprintf('%s/../assets/centralbill.test.png', __DIR__);
+        $fs->copy(sprintf('%s/../assets/centralbill.png', __DIR__), $targetFile);
 
         $this->client->request(
             'POST',
@@ -51,7 +51,7 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
                     'identifier' => $acme->getId(),
                 ],
             ],
-            ['file' => new UploadedFile($targetFile, 'logo.png', 'image/png')],
+            ['file' => new UploadedFile($targetFile, 'centralbill.png', 'image/png')],
             ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']
         );
         $content = json_decode($this->client->getResponse()->getContent(), true);
@@ -93,14 +93,14 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
     public function testThatWeCanUpdateAttachment(array $depends)
     {
         $fs = new Filesystem();
-        $targetFile = sprintf('%s/../assets/logo.test.png', __DIR__);
-        $fs->copy(sprintf('%s/../assets/logo.png', __DIR__), $targetFile);
+        $targetFile = sprintf('%s/../assets/centralbill.test.png', __DIR__);
+        $fs->copy(sprintf('%s/../assets/centralbill.png', __DIR__), $targetFile);
 
         $this->client->request(
             'POST',
             sprintf('/v1/rest/attachments/%s/acme_orm', $depends['id']),
             [],
-            ['file' => new UploadedFile($targetFile, 'logo.png', 'image/png')],
+            ['file' => new UploadedFile($targetFile, 'centralbill.png', 'image/png')],
             ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']
         );
         $content = json_decode($this->client->getResponse()->getContent(), true);

@@ -52,6 +52,11 @@ class FileVolumeHandler implements VolumeHandlerInterface
         );
     }
 
+    public function renameFile(Volume $volume, AttachmentInterface $from, AttachmentInterface $to): void
+    {
+        rename($this->getAttachmentRealPath($volume, $from), $this->getAttachmentRealPath($volume, $to));
+    }
+
     public function getFileInfo(Volume $volume, AttachmentInterface $attachment): FileInfo
     {
         $realPath = $this->getAttachmentRealPath($volume, $attachment);

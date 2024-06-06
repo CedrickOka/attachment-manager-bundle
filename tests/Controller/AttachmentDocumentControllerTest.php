@@ -34,8 +34,8 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
         $dm->flush();
 
         $fs = new Filesystem();
-        $targetFile = sprintf('%s/../assets/logo.test.png', __DIR__);
-        $fs->copy(sprintf('%s/../assets/logo.png', __DIR__), $targetFile);
+        $targetFile = sprintf('%s/../assets/centralbill.test.png', __DIR__);
+        $fs->copy(sprintf('%s/../assets/centralbill.png', __DIR__), $targetFile);
 
         $this->client->request(
             'POST',
@@ -49,13 +49,14 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
                     'relatedObject' => 'acme_mongodb',
                 ],
             ],
-            ['file' => new UploadedFile($targetFile, 'logo.png', 'image/png')],
+            ['file' => new UploadedFile($targetFile, 'centralbill.png', 'image/png')],
             ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']
         );
         $content = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertResponseStatusCodeSame(201);
         $this->assertEquals('s3', $content['volumeName']);
+        $this->assertStringContainsString('.png', $content['filename']);
         $this->assertEquals(['relatedObject' => 'acme_mongodb'], $content['metadata']);
         $this->assertArrayHasKey('filename', $content);
         $this->assertArrayHasKey('lastModified', $content);
@@ -76,6 +77,7 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('s3', $content['volumeName']);
+        $this->assertStringContainsString('.png', $content['filename']);
         $this->assertEquals(['relatedObject' => 'acme_mongodb'], $content['metadata']);
         $this->assertEquals($depends['lastModified'], $content['lastModified']);
         $this->assertEquals($depends['publicUrl'], $content['publicUrl']);
@@ -90,22 +92,23 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
      */
     public function testThatWeCanUpdateAttachment(array $depends)
     {
-        sleep(1);
+        sleep(3);
         $fs = new Filesystem();
-        $targetFile = sprintf('%s/../assets/logo.test.png', __DIR__);
-        $fs->copy(sprintf('%s/../assets/logo.png', __DIR__), $targetFile);
+        $targetFile = sprintf('%s/../assets/aynid.test.ico', __DIR__);
+        $fs->copy(sprintf('%s/../assets/aynid.ico', __DIR__), $targetFile);
 
         $this->client->request(
             'POST',
             sprintf('/v1/rest/attachments/%s/acme_mongodb', $depends['id']),
             [],
-            ['file' => new UploadedFile($targetFile, 'logo.png', 'image/png')],
+            ['file' => new UploadedFile($targetFile, 'aynid.ico', 'image/x-icon')],
             ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']
         );
         $content = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('s3', $content['volumeName']);
+        $this->assertStringContainsString('.ico', $content['filename']);
         $this->assertEquals(['relatedObject' => 'acme_mongodb'], $content['metadata']);
         $this->assertNotEquals($depends['lastModified'], $content['lastModified']);
         $this->assertNotEquals($depends['publicUrl'], $content['publicUrl']);

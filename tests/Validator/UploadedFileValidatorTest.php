@@ -36,7 +36,7 @@ class UploadedFileValidatorTest extends ConstraintValidatorTestCase
      */
     public function testTrueIsInvalid(UploadedFile $constraint)
     {
-        $file = new \Symfony\Component\HttpFoundation\File\UploadedFile(sprintf('%s/../assets/logo.png', __DIR__), 'logo.png', 'image/png', null, true);
+        $file = new \Symfony\Component\HttpFoundation\File\UploadedFile(sprintf('%s/../assets/centralbill.png', __DIR__), 'centralbill.png', 'image/png', null, true);
         $this->validator->validate($file, $constraint);
 
         $this->assertNoViolation();

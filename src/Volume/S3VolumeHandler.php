@@ -92,6 +92,11 @@ class S3VolumeHandler extends FileVolumeHandler
 
         unlink($file->getRealPath());
     }
+    
+    public function renameFile(Volume $volume, AttachmentInterface $from, AttachmentInterface $to): void
+    {
+        rename($this->getAttachmentRealPath($volume, $from), $this->getAttachmentRealPath($volume, $to), stream_context_create(['s3' => ['MetadataDirective' => 'COPY']]));
+    }
 
     //     public function createFileUploadForm(Volume $volume, AttachmentInterface $attachment, string $expiresAt = null): FileUploadForm
     //     {

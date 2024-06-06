@@ -56,9 +56,9 @@ class VolumeHandlerManagerTest extends KernelTestCase
     public function testThatWeCanPutFileInVolume()
     {
         $fs = new Filesystem();
-        $targetFile = sprintf('%s/../assets/logo.test.png', __DIR__);
-        $fs->copy(sprintf('%s/../assets/logo.png', __DIR__), $targetFile);
-        $file = new UploadedFile($targetFile, 'logo.png', 'image/png', null, true);
+        $targetFile = sprintf('%s/../assets/centralbill.test.png', __DIR__);
+        $fs->copy(sprintf('%s/../assets/centralbill.png', __DIR__), $targetFile);
+        $file = new UploadedFile($targetFile, 'centralbill.png', 'image/png', null, true);
 
         /** @var AttachmentInterface $attachment */
         $attachment = new Attachment();

@@ -17,6 +17,8 @@ interface VolumeHandlerInterface
     public function delete(Volume $volume, bool $recursive = false): void;
 
     public function putFile(Volume $volume, AttachmentInterface $attachment, File $file): void;
+    
+    public function renameFile(Volume $volume, AttachmentInterface $from, AttachmentInterface $to): void;
 
     //     public function createFileUploadForm(Volume $volume, string $filename, array $metadata, string $expiresAt = null): FileUploadForm;
 

@@ -14,6 +14,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
  * @method \Oka\AttachmentManagerBundle\Volume\Volume   create(string $volumeName)
  * @method void                                         delete(string $volumeName, bool $recursive = false)
  * @method void                                         putFile(AttachmentInterface $attachment, \Symfony\Component\HttpFoundation\File\File $file)
+ * @method void                                         renameFile(AttachmentInterface $from, AttachmentInterface $to)
  * @method \Oka\AttachmentManagerBundle\Volume\FileInfo getFileInfo(AttachmentInterface $attachment)
  * @method void                                         deleteFile(AttachmentInterface $attachment)
  * @method string                                       getFilePublicUrl(AttachmentInterface $attachment)
@@ -43,7 +44,7 @@ class VolumeHandlerManager
 
     public function __call($method, $args)
     {
-        if (false === in_array($method, ['exists', 'create', 'delete', 'putFile', 'getFileInfo', 'deleteFile', 'getFilePublicUrl'], SORT_REGULAR)) {
+        if (false === in_array($method, ['exists', 'create', 'delete', 'putFile', 'renameFile', 'getFileInfo', 'deleteFile', 'getFilePublicUrl'], SORT_REGULAR)) {
             throw new \BadMethodCallException(sprintf('The method "%s" is not available.', $method));
         }
 

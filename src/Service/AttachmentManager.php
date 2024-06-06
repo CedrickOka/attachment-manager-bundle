@@ -59,20 +59,19 @@ class AttachmentManager implements AttachmentManagerInterface
             throw new \InvalidArgumentException(sprintf('The related object with the identifier "%s" is not found.', $relatedObjectIdentifier));
         }
 
+        $extension = static::getFileExtension($file);
+
         /** @var AttachmentInterface $attachment */
         $attachment = new $this->className();
         $attachment->setVolumeName($relatedObjectConfig['volume_used']);
         $attachment->setMetadata($metadata);
-
-        $mimeTypes = new MimeTypes();
-        $extensions = $mimeTypes->getExtensions($file->getMimeType());
         $attachment->setFilename(sprintf(
             '%s%s%s%s%s',
             $relatedObjectConfig['directory'] ?? $relatedObjectIdentifier,
             \DIRECTORY_SEPARATOR,
             isset($relatedObjectConfig['prefix']) ? sprintf('%s%s', $relatedObjectConfig['prefix'], $this->prefixSeparator) : '',
             Uuid::v4()->__toString(),
-            isset($extensions[0]) ? '.'.$extensions[0] : ''
+            $extension ? '.'.$extension : ''
         ));
 
         if (false === $this->objectManager->contains($attachment)) {
@@ -112,8 +111,18 @@ class AttachmentManager implements AttachmentManagerInterface
 
             /** @var UploadedFileEvent $event */
             $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $file));
+            $fileExtension = static::getFileExtension($file);
 
             $this->volumeHandlerManager->putFile($attachment, $event->getUploadedFile());
+
+            if (null !== $fileExtension && !str_ends_with($attachment->getFilename(), $fileExtension)) {
+                /** @var AttachmentInterface $from */
+                $from = new $this->className();
+                $from->setVolumeName($attachment->getVolumeName());
+                $from->setFilename($attachment->getFilename());
+                $attachment->setFilename(preg_replace(sprintf('#^([a-zA-Z0-9_%s-]+)(.[a-zA-Z0-9]+)?$#', \DIRECTORY_SEPARATOR), sprintf('$1.%s', $fileExtension), $from->getFilename()));
+                $this->volumeHandlerManager->renameFile($from, $attachment);
+            }
         }
 
         $attachment->setLastModified();
@@ -151,18 +160,11 @@ class AttachmentManager implements AttachmentManagerInterface
         return $this->findBy([], $orderBy);
     }
     
-    private function createFilename(string $relatedObjectIdentifier, array $relatedObjectConfig, File $file): string
+    private static function getFileExtension(File $file): ?string
     {
         $mimeTypes = new MimeTypes();
         $extensions = $mimeTypes->getExtensions($file->getMimeType());
 
-        return sprintf(
-            '%s%s%s%s%s',
-            $relatedObjectConfig['directory'] ?? $relatedObjectIdentifier,
-            \DIRECTORY_SEPARATOR,
-            isset($relatedObjectConfig['prefix']) ? sprintf('%s%s', $relatedObjectConfig['prefix'], $this->prefixSeparator) : '',
-            Uuid::v4()->__toString(),
-            isset($extensions[0]) ? '.'.$extensions[0] : ''
-        );
+        return $extensions[0] ?? null;
     }
 }
