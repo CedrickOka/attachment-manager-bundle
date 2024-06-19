@@ -9,9 +9,9 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 interface AttachmentManagerInterface
 {
-    public function create(string $relatedObjectName, string $relatedObjectIdentifier, File $file, array $metadata = []): AttachmentInterface;
+    public function create(string $relatedObjectName, string $relatedObjectIdentifier, File $file, array $metadata = [], bool $andFlush = true): AttachmentInterface;
 
-    public function update(AttachmentInterface $attachment, File $file, array $metadata = []): AttachmentInterface;
+    public function update(AttachmentInterface $attachment, File $file, array $metadata = [], bool $andFlush = true): AttachmentInterface;
 
     public function delete(AttachmentInterface $attachment): void;
 
