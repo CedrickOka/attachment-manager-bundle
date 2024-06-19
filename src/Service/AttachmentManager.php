@@ -160,7 +160,7 @@ class AttachmentManager implements AttachmentManagerInterface
         return $this->findBy([], $orderBy);
     }
     
-    private static function getFileExtension(File $file): ?string
+    public static function getFileExtension(File $file): ?string
     {
         $mimeTypes = new MimeTypes();
         $extensions = $mimeTypes->getExtensions($file->getMimeType());
