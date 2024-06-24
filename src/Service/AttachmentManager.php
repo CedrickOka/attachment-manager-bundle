@@ -139,10 +139,13 @@ class AttachmentManager implements AttachmentManagerInterface
         return $attachment;
     }
 
-    public function delete(AttachmentInterface $attachment): void
+    public function delete(AttachmentInterface $attachment, bool $andFlush = true): void
     {
         $this->objectManager->remove($attachment);
-        $this->objectManager->flush();
+
+        if ($andFlush) {
+            $this->objectManager->flush();
+        }
     }
 
     public function find($id): ?AttachmentInterface

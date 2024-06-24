@@ -13,7 +13,7 @@ interface AttachmentManagerInterface
 
     public function update(AttachmentInterface $attachment, File $file, array $metadata = [], bool $andFlush = true): AttachmentInterface;
 
-    public function delete(AttachmentInterface $attachment): void;
+    public function delete(AttachmentInterface $attachment, bool $andFlush = true): void;
 
     public function find($id): ?AttachmentInterface;
 
