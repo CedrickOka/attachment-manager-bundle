@@ -64,7 +64,7 @@ class AttachmentManager implements AttachmentManagerInterface
         /** @var AttachmentInterface $attachment */
         $attachment = new $this->className();
         $attachment->setVolumeName($relatedObjectConfig['volume_used']);
-        $attachment->setMetadata($metadata);
+        $attachment->setMetadata(['mimeType' => $file->getMimeType(), ...$metadata]);
         $attachment->setFilename(sprintf(
             '%s%s%s%s%s',
             $relatedObjectConfig['directory'] ?? $relatedObjectIdentifier,
@@ -109,9 +109,13 @@ class AttachmentManager implements AttachmentManagerInterface
                 $this->volumeHandlerManager->create($attachment->getVolumeName());
             }
 
+            $fileExtension = static::getFileExtension($file);
+            $metadata = $attachment->getMetadata();
+            $metadata['mimeType'] = $file->getMimeType();
+            $attachment->setMetadata($metadata);
+
             /** @var UploadedFileEvent $event */
             $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $file));
-            $fileExtension = static::getFileExtension($file);
 
             $this->volumeHandlerManager->putFile($attachment, $event->getUploadedFile());
 
@@ -121,6 +125,7 @@ class AttachmentManager implements AttachmentManagerInterface
                 $from->setVolumeName($attachment->getVolumeName());
                 $from->setFilename($attachment->getFilename());
                 $attachment->setFilename(preg_replace(sprintf('#^([a-zA-Z0-9_%s-]+)(.[a-zA-Z0-9]+)?$#', \DIRECTORY_SEPARATOR), sprintf('$1.%s', $fileExtension), $from->getFilename()));
+
                 $this->volumeHandlerManager->renameFile($from, $attachment);
             }
         }

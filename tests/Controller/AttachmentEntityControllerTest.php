@@ -58,7 +58,7 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
 
         $this->assertResponseStatusCodeSame(201);
         $this->assertEquals('file', $content['volumeName']);
-        $this->assertEquals([], $content['metadata']);
+        $this->assertEquals(['mimeType' => 'image/png'], $content['metadata']);
         $this->assertArrayHasKey('filename', $content);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
@@ -78,7 +78,7 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('file', $content['volumeName']);
-        $this->assertEquals([], $content['metadata']);
+        $this->assertEquals(['mimeType' => 'image/png'], $content['metadata']);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
 
@@ -107,7 +107,7 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('file', $content['volumeName']);
-        $this->assertEquals([], $content['metadata']);
+        $this->assertEquals(['mimeType' => 'image/png'], $content['metadata']);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
 
