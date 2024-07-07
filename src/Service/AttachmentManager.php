@@ -64,7 +64,7 @@ class AttachmentManager implements AttachmentManagerInterface
         /** @var AttachmentInterface $attachment */
         $attachment = new $this->className();
         $attachment->setVolumeName($relatedObjectConfig['volume_used']);
-        $attachment->setMetadata(['mimeType' => $file->getMimeType(), ...$metadata]);
+        $attachment->setMetadata(['mime-type' => $file->getMimeType(), ...$metadata]);
         $attachment->setFilename(sprintf(
             '%s%s%s%s%s',
             $relatedObjectConfig['directory'] ?? $relatedObjectIdentifier,
@@ -111,7 +111,7 @@ class AttachmentManager implements AttachmentManagerInterface
 
             $fileExtension = static::getFileExtension($file);
             $metadata = $attachment->getMetadata();
-            $metadata['mimeType'] = $file->getMimeType();
+            $metadata['mime-type'] = $file->getMimeType();
             $attachment->setMetadata($metadata);
 
             /** @var UploadedFileEvent $event */

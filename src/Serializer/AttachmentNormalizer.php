@@ -31,6 +31,11 @@ class AttachmentNormalizer implements ContextAwareNormalizerInterface, Cacheable
         $data = $this->normalizer->normalize($object, $format, $context);
         $data['publicUrl'] = $this->volumeHandlerManager->getFilePublicUrl($object);
 
+        if (isset($data['metadata']) && isset($data['metadata']['mimeType'])) {
+            $data['metadata']['mime-type'] = $data['metadata']['mimeType'];
+            unset($data['metadata']['mimeType']);
+        }
+
         return $data;
     }
 
