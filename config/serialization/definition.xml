@@ -9,7 +9,6 @@
         </attribute>
 
         <attribute name="filename">
-            <group>summary</group>
             <group>details</group>
         </attribute>
 
