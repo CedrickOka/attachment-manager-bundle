@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -59,6 +60,9 @@ class AttachmentManager implements AttachmentManagerInterface
             throw new \InvalidArgumentException(sprintf('The related object with the identifier "%s" is not found.', $relatedObjectIdentifier));
         }
 
+        $propertyAccessor = PropertyAccess::createPropertyAccessorBuilder()
+            ->disableExceptionOnInvalidPropertyPath()
+            ->getPropertyAccessor();
         $extension = static::getFileExtension($file);
 
         /** @var AttachmentInterface $attachment */
@@ -67,7 +71,7 @@ class AttachmentManager implements AttachmentManagerInterface
         $attachment->setMetadata(['mime-type' => $file->getMimeType(), ...$metadata]);
         $attachment->setFilename(sprintf(
             '%s%s%s%s%s',
-            $relatedObjectConfig['directory'] ?? $relatedObjectIdentifier,
+            isset($relatedObjectConfig['directory']) ? $propertyAccessor->getValue($relatedObject, $relatedObjectConfig['directory']) ?? $relatedObjectIdentifier : $relatedObjectIdentifier,
             \DIRECTORY_SEPARATOR,
             isset($relatedObjectConfig['prefix']) ? sprintf('%s%s', $relatedObjectConfig['prefix'], $this->prefixSeparator) : '',
             Uuid::v4()->__toString(),

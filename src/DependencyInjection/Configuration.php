@@ -161,6 +161,10 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('upload_max_size')
                                 ->defaultNull()
                             ->end()
+                                
+//                             ->scalarNode('upload_max_limit')
+//                                 ->defaultNull()
+//                             ->end()
 
                             ->scalarNode('directory')
                                 ->defaultNull()

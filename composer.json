@@ -23,18 +23,19 @@
 		}
 	},
 	"require" : {
-		"php" : ">=8",
-		"coka/input-handler-bundle" : "^1.5",
-		"symfony/cache" : "^5.4",
-		"symfony/config" : "5.4.*",
-		"symfony/console" : "5.4.*",
-		"symfony/dependency-injection" : "5.4.*",
-		"symfony/filesystem" : "5.4.*",
-		"symfony/http-kernel" : "5.4.*",
-		"symfony/mime" : "5.4.*",
-		"symfony/uid" : "5.4.*",
-		"symfony/validator" : "5.4.*",
-		"symfony/yaml" : "5.4.*"
+		"php": ">=8",
+		"coka/input-handler-bundle": "^1.5",
+		"symfony/cache": "^5.4",
+		"symfony/config": "5.4.*",
+		"symfony/console": "5.4.*",
+		"symfony/dependency-injection": "5.4.*",
+		"symfony/filesystem": "5.4.*",
+		"symfony/http-kernel": "5.4.*",
+		"symfony/mime": "5.4.*",
+		"symfony/property-access": "5.4.*",
+		"symfony/uid": "5.4.*",
+		"symfony/validator": "5.4.*",
+		"symfony/yaml": "5.4.*"
 	},
 	"require-dev" : {
 		"aws/aws-sdk-php" : "^3.263",

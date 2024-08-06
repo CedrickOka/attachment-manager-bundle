@@ -120,5 +120,5 @@ oka_attachment_manager:
                 class: Oka\AttachmentManagerBundle\Tests\Document\Acme
                 volume_used: s3
                 upload_max_size: ~
-                directory: ~
+                directory: id
                 prefix: ~
