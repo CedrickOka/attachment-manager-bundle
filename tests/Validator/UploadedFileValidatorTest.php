@@ -44,46 +44,50 @@ class UploadedFileValidatorTest extends ConstraintValidatorTestCase
 
     protected function createValidator()
     {
-        return new UploadedFileValidator(['acme' => '5ki'], new class($this->context) implements ValidatorInterface {
-            private $context;
-
-            public function __construct(ExecutionContextInterface $context)
-            {
-                $this->context = $context;
-            }
-
-            public function validate($value, $constraints = null, $groups = null)
-            {
-                $validator = new FileValidator();
-                $validator->initialize($this->context);
-                $validator->validate($value, $constraints, $groups);
-
-                return $this->context->getViolations();
-            }
-
-            public function validateProperty(object $object, string $propertyName, $groups = null)
-            {
-            }
-
-            public function validatePropertyValue($objectOrClass, string $propertyName, $value, $groups = null)
-            {
-            }
-
-            public function startContext()
-            {
-            }
-
-            public function inContext(ExecutionContextInterface $context)
-            {
-            }
-
-            public function getMetadataFor($value)
-            {
-            }
-
-            public function hasMetadataFor($value)
-            {
-            }
-        });
+        return new UploadedFileValidator(
+            new class($this->context) implements ValidatorInterface {
+                private $context;
+    
+                public function __construct(ExecutionContextInterface $context)
+                {
+                    $this->context = $context;
+                }
+    
+                public function validate($value, $constraints = null, $groups = null)
+                {
+                    $validator = new FileValidator();
+                    $validator->initialize($this->context);
+                    $validator->validate($value, $constraints, $groups);
+    
+                    return $this->context->getViolations();
+                }
+    
+                public function validateProperty(object $object, string $propertyName, $groups = null)
+                {
+                }
+    
+                public function validatePropertyValue($objectOrClass, string $propertyName, $value, $groups = null)
+                {
+                }
+    
+                public function startContext()
+                {
+                }
+    
+                public function inContext(ExecutionContextInterface $context)
+                {
+                }
+    
+                public function getMetadataFor($value)
+                {
+                }
+    
+                public function hasMetadataFor($value)
+                {
+                }
+            }, 
+            ['acme' => '5ki'], 
+            ['acme' => 3]
+        );
     }
 }

@@ -15,18 +15,13 @@ use Oka\AttachmentManagerBundle\Traits\Attacheable;
  */
 abstract class AbstractDoctrineListener implements EventSubscriber
 {
-    protected $className;
-    protected $volumeHandlerManager;
-
     /**
      * @var ClassAnalyzer
      */
-    private $classAnalyser;
+    protected $classAnalyser;
 
-    public function __construct(string $className, VolumeHandlerManager $volumeHandlerManager)
+    public function __construct(protected string $className, protected VolumeHandlerManager $volumeHandlerManager)
     {
-        $this->className = $className;
-        $this->volumeHandlerManager = $volumeHandlerManager;
         $this->classAnalyser = new ClassAnalyzer();
     }
 

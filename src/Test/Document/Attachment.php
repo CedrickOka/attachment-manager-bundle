@@ -1,6 +1,6 @@
 <?php
 
-namespace Oka\AttachmentManagerBundle\Tests\Document;
+namespace Oka\AttachmentManagerBundle\Test\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Oka\AttachmentManagerBundle\Model\AbstractAttachment;

@@ -11,9 +11,7 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 abstract class AbstractController
 {
-    private $serializer;
-
-    public function __construct(SerializerInterface $serializer)
+    public function __construct(private SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
     }
@@ -22,8 +20,6 @@ abstract class AbstractController
     {
         $context = [
             AbstractObjectNormalizer::GROUPS => ['details'],
-            AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
-            AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true,
             ...$context,
         ];
 

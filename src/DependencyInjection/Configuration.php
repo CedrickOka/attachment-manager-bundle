@@ -161,10 +161,10 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('upload_max_size')
                                 ->defaultNull()
                             ->end()
-                                
-//                             ->scalarNode('upload_max_limit')
-//                                 ->defaultNull()
-//                             ->end()
+
+                            ->integerNode('upload_max_count')
+                                ->defaultValue(0)
+                            ->end()
 
                             ->scalarNode('directory')
                                 ->defaultNull()
@@ -188,7 +188,7 @@ class Configuration implements ConfigurationInterface
                                             return false;
                                         }
 
-                                        return (bool) preg_match('#/#', $v);
+                                        return str_contains($v, '/');
                                     })
                                     ->thenInvalid('The configuration value "oka_attachment_manager.'.$name.'.volumes.related_objects.prefix" is not valid because "%s" contains prohibited character "/".')
                                 ->end()

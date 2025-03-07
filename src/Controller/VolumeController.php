@@ -19,13 +19,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class VolumeController extends AbstractController
 {
-    private $volumeHandlerManager;
-
-    public function __construct(SerializerInterface $serializer, VolumeHandlerManager $volumeHandlerManager)
+    public function __construct(SerializerInterface $serializer, private VolumeHandlerManager $volumeHandlerManager)
     {
         parent::__construct($serializer);
-
-        $this->volumeHandlerManager = $volumeHandlerManager;
     }
 
     /**

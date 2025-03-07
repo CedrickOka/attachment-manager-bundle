@@ -3,8 +3,8 @@
 namespace Oka\AttachmentManagerBundle\Tests\Controller;
 
 use Doctrine\ORM\Tools\SchemaTool;
-use Oka\AttachmentManagerBundle\Tests\Entity\Acme;
-use Oka\AttachmentManagerBundle\Tests\Entity\Attachment;
+use Oka\AttachmentManagerBundle\Test\Entity\Acme;
+use Oka\AttachmentManagerBundle\Test\Entity\Attachment;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -62,6 +62,7 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
         $this->assertArrayHasKey('filename', $content);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
+        $content['relatedObject'] = $acme;
 
         return $content;
     }
@@ -82,7 +83,7 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
 
-        return $content;
+        return $depends;
     }
 
     /**
@@ -111,13 +112,48 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
 
-        return $content;
+        return $depends;
+    }
+    
+    /**
+     * @covers
+     *
+     * @depends testThatWeCanUpdateAttachment
+     */
+    public function testThatWeCanAddAttachment(array $depends)
+    {
+        $fs = new Filesystem();
+        $targetFile = sprintf('%s/../assets/centralbill.test.png', __DIR__);
+        $fs->copy(sprintf('%s/../assets/centralbill.png', __DIR__), $targetFile);
+
+        $this->client->request(
+            'POST',
+            '/v1/rest/attachments',
+            [
+                'relatedObject' => [
+                    'name' => 'acme_orm',
+                    'identifier' => $depends['relatedObject']->getId(),
+                ],
+            ],
+            ['file' => new UploadedFile($targetFile, 'centralbill.png', 'image/png')],
+            ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']
+        );
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertResponseStatusCodeSame(400);
+        $this->assertEquals('[file]', $content['violations'][0]['propertyPath']);
+        $this->assertCount(1, $content['violations']);
+        $this->assertArrayHasKey('type', $content);
+        $this->assertArrayHasKey('title', $content);
+        $this->assertArrayHasKey('detail', $content);
+
+        return $depends;
     }
 
     /**
      * @covers
      *
-     * @depends testThatWeCanUpdateAttachment
+     * @depends testThatWeCanAddAttachment
      */
     public function testThatWeCanDeleteAttachment(array $depends)
     {

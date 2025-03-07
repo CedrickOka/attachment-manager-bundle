@@ -12,9 +12,7 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
  */
 class IsRelatedObjectNameValidator extends ConstraintValidator
 {
-    private $relatedObjectNames;
-
-    public function __construct(array $relatedObjectNames)
+    public function __construct(private array $relatedObjectNames)
     {
         $this->relatedObjectNames = $relatedObjectNames;
     }

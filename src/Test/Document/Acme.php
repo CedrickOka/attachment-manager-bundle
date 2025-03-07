@@ -1,28 +1,22 @@
 <?php
 
-namespace Oka\AttachmentManagerBundle\Tests\Entity;
+namespace Oka\AttachmentManagerBundle\Test\Document;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Oka\AttachmentManagerBundle\Traits\Attacheable;
 
 /**
- * @ORM\Entity()
- *
- * @ORM\Table(name="acme")
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
+ *
+ * @MongoDB\Document(collection="acme")
  */
 class Acme
 {
     use Attacheable;
 
     /**
-     * @ORM\Id()
-     *
-     * @ORM\Column(type="integer")
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @MongoDB\Id()
      *
      * @var string
      */
@@ -35,6 +29,6 @@ class Acme
 
     public function getId(): string
     {
-        return (string) $this->id;
+        return $this->id;
     }
 }

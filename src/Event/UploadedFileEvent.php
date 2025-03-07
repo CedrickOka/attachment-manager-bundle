@@ -8,15 +8,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class UploadedFileEvent extends Event
 {
-    private $attachment;
-    private $uploadedFile;
-    private $relatedObject;
-
-    public function __construct(AttachmentInterface $attachment, File $uploadedFile, mixed $relatedObject = null)
+    public function __construct(private AttachmentInterface $attachment, private File $uploadedFile, private mixed $relatedObject = null)
     {
-        $this->attachment = $attachment;
-        $this->uploadedFile = $uploadedFile;
-        $this->relatedObject = $relatedObject;
     }
 
     public function getAttachment(): AttachmentInterface

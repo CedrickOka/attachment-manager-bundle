@@ -2,8 +2,8 @@
 
 namespace Oka\AttachmentManagerBundle\Tests\Controller;
 
-use Oka\AttachmentManagerBundle\Tests\Document\Acme;
-use Oka\AttachmentManagerBundle\Tests\Document\Attachment;
+use Oka\AttachmentManagerBundle\Test\Document\Acme;
+use Oka\AttachmentManagerBundle\Test\Document\Attachment;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

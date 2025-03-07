@@ -19,8 +19,8 @@
         </unique-constraints>
 
 <!--         <lifecycle-callbacks>
-        	<lifecycle-callback type="prePersist" method="setLastModified" />
-        	<lifecycle-callback type="preUpdate" method="setLastModified" />
-    	</lifecycle-callbacks> -->
+            <lifecycle-callback type="prePersist" method="setLastModified" />
+            <lifecycle-callback type="preUpdate" method="setLastModified" />
+        </lifecycle-callbacks> -->
     </mapped-superclass>
 </doctrine-mapping>

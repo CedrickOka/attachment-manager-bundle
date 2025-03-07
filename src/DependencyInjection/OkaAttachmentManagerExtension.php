@@ -25,6 +25,7 @@ class OkaAttachmentManagerExtension extends Extension
 
         $relatedObjectDBDriverMapping = [];
         $relatedObjectUploadMaxSizes = [];
+        $relatedObjectUploadMaxCounts = [];
 
         foreach (['orm', 'mongodb'] as $dbDriver) {
             if (false === $this->isConfigEnabled($container, $config[$dbDriver])) {
@@ -39,6 +40,7 @@ class OkaAttachmentManagerExtension extends Extension
             foreach ($config[$dbDriver]['related_objects'] as $name => $value) {
                 $relatedObjectDBDriverMapping[$name] = $dbDriver;
                 $relatedObjectUploadMaxSizes[$name] = $value['upload_max_size'];
+                $relatedObjectUploadMaxCounts[$name] = $value['upload_max_count'];
             }
 
             $container
@@ -60,7 +62,9 @@ class OkaAttachmentManagerExtension extends Extension
 
         $container
             ->getDefinition('oka_attachment_manager.uploaded_file_validator')
-            ->replaceArgument(0, $relatedObjectUploadMaxSizes);
+            ->replaceArgument(2, $relatedObjectDBDriverMapping)
+            ->replaceArgument(3, $relatedObjectUploadMaxSizes)
+            ->replaceArgument(4, $relatedObjectUploadMaxCounts);
 
         $container
             ->getDefinition('oka_attachment_manager.attachment_controller')
@@ -68,7 +72,7 @@ class OkaAttachmentManagerExtension extends Extension
 
         $container
             ->getDefinition('oka_attachment_manager.volume_handler_manager')
-            ->replaceArgument(1, $config['volumes']);
+            ->replaceArgument(0, $config['volumes']);
 
         $container
             ->registerForAutoconfiguration(VolumeHandlerFactoryInterface::class)

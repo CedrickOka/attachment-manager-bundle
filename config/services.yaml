@@ -6,7 +6,7 @@ services:
 
     oka_attachment_manager.uploaded_file_validator:
         class: Oka\AttachmentManagerBundle\Validator\UploadedFileValidator
-        arguments: [[], '@validator']
+        arguments: ['@validator', '@oka_attachment_manager.attachment_manager_locator', [], [], []]
         tags: ['validator.constraint_validator']
 
     oka_attachment_manager.attachment.serializer.normalizer:
@@ -24,7 +24,7 @@ services:
 
     oka_attachment_manager.volume_handler_manager:
         class: Oka\AttachmentManagerBundle\Service\VolumeHandlerManager
-        arguments: [!tagged_iterator oka_attachment_manager.volume_handler.factory, [], null]
+        arguments: [[], !tagged_iterator oka_attachment_manager.volume_handler.factory, ~]
 
     oka_attachment_manager.attachment_manager_locator:
         class: Symfony\Component\DependencyInjection\ServiceLocator
@@ -36,7 +36,7 @@ services:
 
     oka_attachment_manager.attachment_controller:
         class: Oka\AttachmentManagerBundle\Controller\AttachmentController
-        arguments: ['@validator', '@serializer', '@oka_attachment_manager.attachment_manager_locator', []]
+        arguments: ['@serializer', '@validator', '@oka_attachment_manager.attachment_manager_locator', []]
 
     Oka\AttachmentManagerBundle\Serializer\AttachmentNormalizer:
         public: true

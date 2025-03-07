@@ -4,7 +4,7 @@ namespace Oka\AttachmentManagerBundle\Tests\Service;
 
 use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
 use Oka\AttachmentManagerBundle\Service\VolumeHandlerManager;
-use Oka\AttachmentManagerBundle\Tests\Document\Attachment;
+use Oka\AttachmentManagerBundle\Test\Document\Attachment;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;

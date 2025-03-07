@@ -23,17 +23,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class AttachmentController extends AbstractController
 {
-    private $validator;
-    private $attachmentManagerLocator;
-    private $relatedObjectDBDriverMapping;
-
-    public function __construct(ValidatorInterface $validator, SerializerInterface $serializer, ServiceLocator $attachmentManagerLocator, array $relatedObjectDBDriverMapping)
-    {
+    public function __construct(
+        SerializerInterface $serializer, 
+        private ValidatorInterface $validator, 
+        private ServiceLocator $attachmentManagerLocator, 
+        private array $relatedObjectDBDriverMapping
+    ) {
         parent::__construct($serializer);
-
-        $this->validator = $validator;
-        $this->attachmentManagerLocator = $attachmentManagerLocator;
-        $this->relatedObjectDBDriverMapping = $relatedObjectDBDriverMapping;
     }
 
     /**
@@ -48,7 +44,13 @@ class AttachmentController extends AbstractController
      */
     public function create(Request $request, $version, $protocol, array $requestContent): Response
     {
-        if (null !== ($response = $this->validate($requestContent['file'], new UploadedFile(['relatedObjectName' => $requestContent['relatedObject']['name'], 'errorPath' => '[file]'])))) {
+        $constraint = new UploadedFile([
+            'errorPath' => '[file]', 
+            'relatedObjectName' => $requestContent['relatedObject']['name'], 
+            'relatedObjectIdentifier' => $requestContent['relatedObject']['identifier'],
+        ]);
+
+        if (null !== ($response = $this->validate($requestContent['file'], $constraint))) {
             return $response;
         }
 

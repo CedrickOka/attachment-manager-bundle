@@ -46,9 +46,9 @@ class DoctrinePass implements CompilerPassInterface
                 new Definition(
                     AttachmentManager::class,
                     [
+                        new Parameter(sprintf('oka_attachment_manager.%s.related_objects', $key)),
                         new Parameter('oka_attachment_manager.prefix_separator'),
                         new Parameter(sprintf('oka_attachment_manager.%s.class', $key)),
-                        $container->getParameter(sprintf('oka_attachment_manager.%s.related_objects', $key)),
                         new Reference($objectManagerServiceId),
                         new Reference('oka_attachment_manager.volume_handler_manager'),
                         new Reference('event_dispatcher'),

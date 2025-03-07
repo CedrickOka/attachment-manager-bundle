@@ -2,6 +2,8 @@
 
 namespace Oka\AttachmentManagerBundle\Service;
 
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ObjectManager;
 use Oka\AttachmentManagerBundle\Event\UploadedFileEvent;
 use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
@@ -9,41 +11,34 @@ use Oka\AttachmentManagerBundle\Model\AttachmentManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Mime\MimeTypes;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
 class AttachmentManager implements AttachmentManagerInterface
 {
-    private $prefixSeparator;
-    private $className;
+    /**
+     * @var ParameterBag
+     */
     private $relatedObjets;
-    private $objectManager;
-    private $volumeHandlerManager;
-    private $dispatcher;
-
+    
     /**
      * @var \Doctrine\Persistence\ObjectRepository
      */
     private $objectRepository;
 
     public function __construct(
-        string $prefixSeparator,
-        string $className,
         array $relatedObjets,
-        ObjectManager $objectManager,
-        VolumeHandlerManager $volumeHandlerManager,
-        EventDispatcherInterface $dispatcher
+        private string $prefixSeparator,
+        private string $className,
+        private ObjectManager $objectManager,
+        private VolumeHandlerManager $volumeHandlerManager,
+        private EventDispatcherInterface $dispatcher
     ) {
-        $this->prefixSeparator = $prefixSeparator;
-        $this->className = $className;
         $this->relatedObjets = new ParameterBag($relatedObjets);
-        $this->objectManager = $objectManager;
-        $this->volumeHandlerManager = $volumeHandlerManager;
-        $this->dispatcher = $dispatcher;
         $this->objectRepository = $objectManager->getRepository($className);
     }
 
@@ -71,7 +66,7 @@ class AttachmentManager implements AttachmentManagerInterface
         $attachment->setMetadata(['mime-type' => $file->getMimeType(), ...$metadata]);
         $attachment->setFilename(sprintf(
             '%s%s%s%s%s',
-            isset($relatedObjectConfig['directory']) ? $propertyAccessor->getValue($relatedObject, $relatedObjectConfig['directory']) ?? $relatedObjectIdentifier : $relatedObjectIdentifier,
+            isset($relatedObjectConfig['directory']) ? $propertyAccessor->getValue($relatedObject, $relatedObjectConfig['directory']) ?? $relatedObjectConfig['directory'] : $relatedObjectIdentifier,
             \DIRECTORY_SEPARATOR,
             isset($relatedObjectConfig['prefix']) ? sprintf('%s%s', $relatedObjectConfig['prefix'], $this->prefixSeparator) : '',
             Uuid::v4()->__toString(),
@@ -104,23 +99,17 @@ class AttachmentManager implements AttachmentManagerInterface
 
     public function update(AttachmentInterface $attachment, ?File $file = null, array $metadata = [], bool $andFlush = true): AttachmentInterface
     {
-        if (!empty($metadata)) {
-            $attachment->setMetadata($metadata);
-        }
-
         if (null !== $file) {
             if (!$this->volumeHandlerManager->exists($attachment->getVolumeName())) {
                 $this->volumeHandlerManager->create($attachment->getVolumeName());
             }
 
             $fileExtension = static::getFileExtension($file);
-            $metadata = $attachment->getMetadata();
+            $metadata = empty($metadata) ? $attachment->getMetadata() : $metadata;
             $metadata['mime-type'] = $file->getMimeType();
-            $attachment->setMetadata($metadata);
 
             /** @var UploadedFileEvent $event */
             $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $file));
-
             $this->volumeHandlerManager->putFile($attachment, $event->getUploadedFile());
 
             if (null !== $fileExtension && !str_ends_with($attachment->getFilename(), $fileExtension)) {
@@ -128,12 +117,18 @@ class AttachmentManager implements AttachmentManagerInterface
                 $from = new $this->className();
                 $from->setVolumeName($attachment->getVolumeName());
                 $from->setFilename($attachment->getFilename());
-                $attachment->setFilename(preg_replace(sprintf('#^([a-zA-Z0-9_%s-]+)(.[a-zA-Z0-9]+)?$#', \DIRECTORY_SEPARATOR), sprintf('$1.%s', $fileExtension), $from->getFilename()));
+
+                if (!preg_match('#^(.+)(\.[a-zA-Z0-9]+)$#', $from->getFilename())) {
+                    $attachment->setFilename(sprintf('%s.%s', $from->getFilename(), $fileExtension));
+                } else {
+                    $attachment->setFilename(preg_replace(sprintf('#^(.+)(\.[a-zA-Z0-9]+)$#', \DIRECTORY_SEPARATOR), sprintf('$1.%s', $fileExtension), $from->getFilename()));
+                }
 
                 $this->volumeHandlerManager->renameFile($from, $attachment);
             }
         }
 
+        $attachment->setMetadata($metadata);
         $attachment->setLastModified();
 
         if ($andFlush) {
@@ -152,7 +147,7 @@ class AttachmentManager implements AttachmentManagerInterface
         }
     }
 
-    public function find($id): ?AttachmentInterface
+    public function find(string|int $id): ?AttachmentInterface
     {
         return $this->objectRepository->find($id);
     }
@@ -171,7 +166,49 @@ class AttachmentManager implements AttachmentManagerInterface
     {
         return $this->findBy([], $orderBy);
     }
-    
+
+    public function findRelatedObjectById(string $relatedObjectName, string $attachmentId): ?object
+    {
+        $relatedObjectConfig = $this->relatedObjets->get($relatedObjectName);
+
+        /** @var EntityManager $objectManager */
+        if ($this->objectManager instanceof EntityManager) {
+            $classMetadata = $this->objectManager->getClassMetadata($this->className);
+            $identifierFieldName = $classMetadata->getSingleIdentifierFieldName();
+
+            return $this->objectManager->createQueryBuilder()
+                                    ->select('r')
+                                    ->from($relatedObjectConfig['class'], 'r')
+                                    ->innerJoin('r.attachments', 'a')
+                                    ->where(sprintf('a.%s = :id', $identifierFieldName))
+                                    ->setParameter('id', $attachmentId, $classMetadata->getTypeOfField($identifierFieldName))
+                                    ->getQuery()
+                                    ->getOneOrNullResult();
+        }
+
+        /** @var DocumentManager $objectManager */
+        return $this->objectManager->createQueryBuilder()
+                                ->find($relatedObjectConfig['class'])
+                                ->field('attachments')->includesReferenceTo($this->find($attachmentId))
+                                ->getQuery()
+                                ->getSingleResult();
+    }
+
+    public function getClassName(): string
+    {
+        return $this->className;
+    }
+
+    public function getRelatedObjets(): ParameterBag
+    {
+        return $this->relatedObjets;
+    }
+
+    public function getObjectManager(): ObjectManager
+    {
+        return $this->objectManager;
+    }
+
     public static function getFileExtension(File $file): ?string
     {
         $mimeTypes = new MimeTypes();

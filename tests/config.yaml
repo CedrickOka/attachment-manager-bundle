@@ -39,8 +39,8 @@ doctrine:
             OkaAttachmentManagerBundle:
                 is_bundle: false
                 type: annotation
-                dir: '%kernel.project_dir%/tests/Entity'
-                prefix: 'Oka\AttachmentManagerBundle\Tests\Entity'
+                dir: '%kernel.project_dir%/src/Test/Entity'
+                prefix: 'Oka\AttachmentManagerBundle\Test\Entity'
                 alias: OkaAttachmentManagerBundle
 
 doctrine_mongodb:
@@ -58,8 +58,8 @@ doctrine_mongodb:
                 OkaAttachmentManagerBundle:
                     is_bundle: false
                     type: annotation
-                    dir: '%kernel.project_dir%/tests/Document'
-                    prefix: 'Oka\AttachmentManagerBundle\Tests\Document'
+                    dir: '%kernel.project_dir%/src/Test/Document'
+                    prefix: 'Oka\AttachmentManagerBundle\Test\Document'
                     alias: OkaAttachmentManagerBundle
 
 oka_input_handler:
@@ -104,21 +104,23 @@ oka_attachment_manager:
             options: []
     orm:
         model_manager_name: ~
-        class: Oka\AttachmentManagerBundle\Tests\Entity\Attachment
+        class: Oka\AttachmentManagerBundle\Test\Entity\Attachment
         related_objects:
             acme_orm:
-                class: Oka\AttachmentManagerBundle\Tests\Entity\Acme
+                class: Oka\AttachmentManagerBundle\Test\Entity\Acme
                 volume_used: file
                 upload_max_size: ~
+                upload_max_count: 1
                 directory: ~
                 prefix: ~
     mongodb:
         model_manager_name: ~
-        class: Oka\AttachmentManagerBundle\Tests\Document\Attachment
+        class: Oka\AttachmentManagerBundle\Test\Document\Attachment
         related_objects:
             acme_mongodb:
-                class: Oka\AttachmentManagerBundle\Tests\Document\Acme
+                class: Oka\AttachmentManagerBundle\Test\Document\Acme
                 volume_used: s3
                 upload_max_size: ~
+                upload_max_count: 1
                 directory: id
                 prefix: ~

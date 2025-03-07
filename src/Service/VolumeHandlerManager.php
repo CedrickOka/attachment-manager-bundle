@@ -21,20 +21,14 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
  */
 class VolumeHandlerManager
 {
-    private $volumeHandlerFactories;
-
     /**
      * @var ParameterBag
      */
     private $volumes;
 
-    private $cachePool;
-
-    public function __construct(iterable $volumeHandlerFactories, array $volumes, ?CacheItemPoolInterface $cachePool = null)
+    public function __construct(array $volumes, private iterable $volumeHandlerFactories, private ?CacheItemPoolInterface $cachePool = null)
     {
-        $this->volumeHandlerFactories = $volumeHandlerFactories;
         $this->volumes = new ParameterBag($volumes);
-        $this->cachePool = $cachePool;
     }
 
     public function getVolumes(): ParameterBag

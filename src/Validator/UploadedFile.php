@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraint;
 class UploadedFile extends Constraint
 {
     public ?string $relatedObjectName = null;
+    public ?string $relatedObjectIdentifier = null;
     public ?string $errorPath = null;
     public string $message = 'The file is not valid.';
 
