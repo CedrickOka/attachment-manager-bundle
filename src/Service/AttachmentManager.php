@@ -99,14 +99,17 @@ class AttachmentManager implements AttachmentManagerInterface
 
     public function update(AttachmentInterface $attachment, ?File $file = null, array $metadata = [], bool $andFlush = true): AttachmentInterface
     {
+        if (!empty($metadata)) {
+            $attachment->setMetadata($metadata);
+        }
+
         if (null !== $file) {
             if (!$this->volumeHandlerManager->exists($attachment->getVolumeName())) {
                 $this->volumeHandlerManager->create($attachment->getVolumeName());
             }
 
             $fileExtension = static::getFileExtension($file);
-            $metadata = empty($metadata) ? $attachment->getMetadata() : $metadata;
-            $metadata['mime-type'] = $file->getMimeType();
+            $attachment->setMetadata(array_merge($attachment->getMetadata(), ['mime-type' => $file->getMimeType()]));
 
             /** @var UploadedFileEvent $event */
             $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $file));
@@ -128,7 +131,6 @@ class AttachmentManager implements AttachmentManagerInterface
             }
         }
 
-        $attachment->setMetadata($metadata);
         $attachment->setLastModified();
 
         if ($andFlush) {

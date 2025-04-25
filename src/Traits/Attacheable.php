@@ -43,7 +43,7 @@ trait Attacheable
         });
 
         if (null !== $foundAttachment) {
-            $this->attachments->removeElement($this->attachments->indexOf($foundAttachment));
+            $this->attachments->removeElement($foundAttachment);
         }
 
         return $this;
