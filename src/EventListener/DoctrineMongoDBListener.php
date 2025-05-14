@@ -19,7 +19,7 @@ class DoctrineMongoDBListener extends AbstractDoctrineListener
         ];
     }
 
-    protected function doLoadClassMetadata(ClassMetadata $classMetadata): void
+    protected function doLoadClassMetadata(ClassMetadata $classMetadata, \ReflectionClass $reflClass): void
     {
         if (!$classMetadata instanceof \Doctrine\ODM\MongoDB\Mapping\ClassMetadata) {
             return;

@@ -46,7 +46,7 @@ abstract class AbstractDoctrineListener implements EventSubscriber
             return;
         }
 
-        $this->doLoadClassMetadata($classMetadata);
+        $this->doLoadClassMetadata($classMetadata, $reflClass);
     }
 
     public function preRemove(LifecycleEventArgs $event): void
@@ -58,5 +58,5 @@ abstract class AbstractDoctrineListener implements EventSubscriber
         $this->volumeHandlerManager->deleteFile($event->getObject());
     }
 
-    abstract protected function doLoadClassMetadata(ClassMetadata $classMetadata): void;
+    abstract protected function doLoadClassMetadata(ClassMetadata $classMetadata, \ReflectionClass $reflClass): void;
 }

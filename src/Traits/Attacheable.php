@@ -48,4 +48,9 @@ trait Attacheable
 
         return $this;
     }
+
+    public static function getAttachmentsOrderBy(): array
+    {
+        return [];
+    }
 }
