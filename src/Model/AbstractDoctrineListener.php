@@ -28,7 +28,8 @@ abstract class AbstractDoctrineListener implements EventSubscriber
     public function getSubscribedEvents(): array
     {
         return [
-            'preRemove',
+            'loadClassMetadata',
+            'postRemove',
         ];
     }
 
@@ -49,7 +50,7 @@ abstract class AbstractDoctrineListener implements EventSubscriber
         $this->doLoadClassMetadata($classMetadata, $reflClass);
     }
 
-    public function preRemove(LifecycleEventArgs $event): void
+    public function postRemove(LifecycleEventArgs $event): void
     {
         if (!is_a($event->getObject(), $this->className)) {
             return;

@@ -2,7 +2,6 @@
 
 namespace Oka\AttachmentManagerBundle\EventListener;
 
-use Doctrine\ORM\Events;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Oka\AttachmentManagerBundle\Model\AbstractDoctrineListener;
 
@@ -11,14 +10,6 @@ use Oka\AttachmentManagerBundle\Model\AbstractDoctrineListener;
  */
 class DoctrineORMListener extends AbstractDoctrineListener
 {
-    public function getSubscribedEvents(): array
-    {
-        return [
-            ...parent::getSubscribedEvents(),
-            Events::loadClassMetadata,
-        ];
-    }
-
     protected function doLoadClassMetadata(ClassMetadata $classMetadata, \ReflectionClass $reflClass): void
     {
         if (!$classMetadata instanceof \Doctrine\ORM\Mapping\ClassMetadata) {

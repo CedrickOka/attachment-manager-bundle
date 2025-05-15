@@ -85,13 +85,17 @@ class AttachmentManager implements AttachmentManagerInterface
 
         /** @var UploadedFileEvent $event */
         $event = $this->dispatcher->dispatch(new UploadedFileEvent($attachment, $file, $relatedObject));
-
         $this->volumeHandlerManager->putFile($attachment, $event->getUploadedFile());
-
         $attachment->setLastModified();
 
         if ($andFlush) {
-            $this->objectManager->flush();
+            try {
+                $this->objectManager->flush();
+            } catch (\Exception $e) {
+                $this->volumeHandlerManager->deleteFile($attachment);
+
+                throw $e;
+            }
         }
 
         return $attachment;
