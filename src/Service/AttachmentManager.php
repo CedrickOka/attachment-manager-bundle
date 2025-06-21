@@ -42,7 +42,7 @@ class AttachmentManager implements AttachmentManagerInterface
         $this->objectRepository = $objectManager->getRepository($className);
     }
 
-    public function create(string $relatedObjectName, string $relatedObjectIdentifier, File $file, array $metadata = [], bool $andFlush = true): AttachmentInterface
+    public function create(string $relatedObjectName, string|object $relatedObjectIdentifier, File $file, array $metadata = [], bool $andFlush = true): AttachmentInterface
     {
         if (!$this->relatedObjets->has($relatedObjectName)) {
             throw new \InvalidArgumentException(sprintf('The related object with the name "%s" does not exist.', $relatedObjectName));
@@ -50,9 +50,13 @@ class AttachmentManager implements AttachmentManagerInterface
 
         $relatedObjectConfig = $this->relatedObjets->get($relatedObjectName);
 
-        /** @var \Oka\AttachmentManagerBundle\Traits\Attacheable $relatedObject */
-        if (!$relatedObject = $this->objectManager->find($relatedObjectConfig['class'], $relatedObjectIdentifier)) {
-            throw new \InvalidArgumentException(sprintf('The related object with the identifier "%s" is not found.', $relatedObjectIdentifier));
+        if (is_object($relatedObjectIdentifier) && is_a($relatedObjectIdentifier, $relatedObjectConfig['class'])) {
+            $relatedObject = $relatedObjectIdentifier;
+        } else {
+            /** @var \Oka\AttachmentManagerBundle\Traits\Attacheable $relatedObject */
+            if (!$relatedObject = $this->objectManager->find($relatedObjectConfig['class'], $relatedObjectIdentifier)) {
+                throw new \InvalidArgumentException(sprintf('The related object with the identifier "%s" is not found.', $relatedObjectIdentifier));
+            }
         }
 
         $propertyAccessor = PropertyAccess::createPropertyAccessorBuilder()
@@ -173,7 +177,7 @@ class AttachmentManager implements AttachmentManagerInterface
         return $this->findBy([], $orderBy);
     }
 
-    public function findRelatedObjectById(string $relatedObjectName, string $attachmentId): ?object
+    public function findRelatedObjectByAttachmentId(string $relatedObjectName, string $attachmentId): ?object
     {
         $relatedObjectConfig = $this->relatedObjets->get($relatedObjectName);
 

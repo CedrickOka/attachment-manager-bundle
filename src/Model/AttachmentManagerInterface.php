@@ -25,8 +25,8 @@ interface AttachmentManagerInterface
 
     public function findAll(?array $orderBy = null): array;
 
-    public function findRelatedObjectById(string $relatedObjectName, string $id): ?object;
-    
+    public function findRelatedObjectByAttachmentId(string $relatedObjectName, string $attachmentId): ?object;
+
     public function getClassName(): string;
 
     public function getRelatedObjets(): ParameterBag;
