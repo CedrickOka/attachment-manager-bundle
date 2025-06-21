@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
  */
 interface AttachmentManagerInterface
 {
-    public function create(string $relatedObjectName, string $relatedObjectIdentifier, File $file, array $metadata = [], bool $andFlush = true): AttachmentInterface;
+    public function create(string $relatedObjectName, string|object $relatedObjectIdentifier, File $file, array $metadata = [], bool $andFlush = true): AttachmentInterface;
 
     public function update(AttachmentInterface $attachment, File $file, array $metadata = [], bool $andFlush = true): AttachmentInterface;
 
