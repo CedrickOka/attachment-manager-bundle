@@ -8,18 +8,15 @@ use Symfony\Component\Serializer\Annotation as Serializer;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
- * @MongoDB\Document(collection="attachment")
  */
+#[MongoDB\Document(collection: 'attachment')]
 class Attachment extends AbstractAttachment
 {
     /**
-     * @MongoDB\Id()
-     *
-     * @Serializer\Groups({"summary", "details"})
-     *
      * @var string
      */
+    #[MongoDB\Id()]
+    #[Serializer\Groups(['summary', 'details'])]
     protected $id;
 
     public function getId(): string

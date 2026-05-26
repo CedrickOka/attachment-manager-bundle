@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class OkaAttachmentManagerExtension extends Extension
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -46,9 +46,13 @@ class OkaAttachmentManagerExtension extends Extension
             $container
                 ->setDefinition(
                     sprintf('oka_attachment_manager.%s.doctrine_listener', $dbDriver),
-                    new Definition(OkaAttachmentManagerBundle::$doctrineDrivers[$dbDriver]['subscriber_class'], [$config[$dbDriver]['class'], new Reference('oka_attachment_manager.volume_handler_manager')])
+                    new Definition(
+                        OkaAttachmentManagerBundle::$doctrineDrivers[$dbDriver]['listener_class'],
+                        [$config[$dbDriver]['class'], new Reference('oka_attachment_manager.volume_handler_manager')]
+                    )
                 )
-                ->addTag(OkaAttachmentManagerBundle::$doctrineDrivers[$dbDriver]['tag']);
+                ->addTag(OkaAttachmentManagerBundle::$doctrineDrivers[$dbDriver]['tag'], ['event' => 'loadClassMetadata'])
+                ->addTag(OkaAttachmentManagerBundle::$doctrineDrivers[$dbDriver]['tag'], ['event' => 'postRemove']);
         }
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));

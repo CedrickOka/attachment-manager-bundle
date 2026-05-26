@@ -4,22 +4,15 @@ namespace Oka\AttachmentManagerBundle\Serializer;
 
 use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
 use Oka\AttachmentManagerBundle\Service\VolumeHandlerManager;
-use Symfony\Component\Serializer\Normalizer\CacheableSupportsMethodInterface;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
-class AttachmentNormalizer implements ContextAwareNormalizerInterface, CacheableSupportsMethodInterface
+class AttachmentNormalizer implements NormalizerInterface
 {
-    private $normalizer;
-    private $volumeHandlerManager;
-
-    public function __construct(ObjectNormalizer $normalizer, VolumeHandlerManager $volumeHandlerManager)
+    public function __construct(private NormalizerInterface $normalizer, private VolumeHandlerManager $volumeHandlerManager)
     {
-        $this->normalizer = $normalizer;
-        $this->volumeHandlerManager = $volumeHandlerManager;
     }
 
     /**
@@ -44,8 +37,10 @@ class AttachmentNormalizer implements ContextAwareNormalizerInterface, Cacheable
         return $data instanceof AttachmentInterface;
     }
 
-    public function hasCacheableSupportsMethod(): bool
+    public function getSupportedTypes($format): array
     {
-        return false;
+        return [
+            AttachmentInterface::class => true,
+        ];
     }
 }

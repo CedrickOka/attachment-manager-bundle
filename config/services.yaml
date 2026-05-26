@@ -11,7 +11,7 @@ services:
 
     oka_attachment_manager.attachment.serializer.normalizer:
         class: Oka\AttachmentManagerBundle\Serializer\AttachmentNormalizer
-        arguments: ['@Symfony\Component\Serializer\Normalizer\ObjectNormalizer', '@oka_attachment_manager.volume_handler_manager']
+        arguments: ['@serializer.normalizer.object', '@oka_attachment_manager.volume_handler_manager']
         tags: ['serializer.normalizer']
 
     oka_attachment_manager.file_volume_handler.factory:

@@ -4,9 +4,8 @@ namespace Oka\AttachmentManagerBundle\Validator;
 
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\InvalidOptionsException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
@@ -18,11 +17,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class UploadedFileValidator extends ConstraintValidator
 {
     public function __construct(
-        private ValidatorInterface $validator, 
+        private ValidatorInterface $validator,
         private ServiceLocator $attachmentManagerLocator,
-        private array $relatedObjectDBDriverMapping, 
-        private array $relatedObjectUploadedMaxSizes, 
-        private array $relatedObjectUploadedMaxCounts
+        private array $relatedObjectDBDriverMapping,
+        private array $relatedObjectUploadedMaxSizes,
+        private array $relatedObjectUploadedMaxCounts,
     ) {
     }
 
@@ -50,7 +49,7 @@ class UploadedFileValidator extends ConstraintValidator
         if ($this->relatedObjectUploadedMaxSizes[$constraint->relatedObjectName]) {
             $className = str_contains($value->getMimeType(), 'image/') ? Assert\Image::class : Assert\File::class;
             /** @var \Symfony\Component\Validator\ConstraintViolationListInterface $errors */
-            $errors = $this->validator->validate($value, new $className(['maxSize' => $this->relatedObjectUploadedMaxSizes[$constraint->relatedObjectName]]));
+            $errors = $this->validator->validate($value, new $className(maxSize: $this->relatedObjectUploadedMaxSizes[$constraint->relatedObjectName]));
 
             /** @var \Symfony\Component\Validator\ConstraintViolationInterface $error */
             foreach ($errors as $error) {
@@ -65,8 +64,9 @@ class UploadedFileValidator extends ConstraintValidator
             /** @var \Oka\AttachmentManagerBundle\Model\AttachmentManagerInterface $attachmentManager */
             $attachmentManager = $this->attachmentManagerLocator->get($this->relatedObjectDBDriverMapping[$constraint->relatedObjectName]);
             $relatedObject = $attachmentManager->getObjectManager()->find($attachmentManager->getRelatedObjets()->get($constraint->relatedObjectName)['class'], $constraint->relatedObjectIdentifier);
+
             /** @var \Symfony\Component\Validator\ConstraintViolationListInterface $errors */
-            $errors = $this->validator->validate(1 + $relatedObject->getAttachments()->count(), new Range(['min' => 0, 'max' => $this->relatedObjectUploadedMaxCounts[$constraint->relatedObjectName]]));
+            $errors = $this->validator->validate(1 + $relatedObject->getAttachments()->count(), new Assert\Range(min: 0, max: $this->relatedObjectUploadedMaxCounts[$constraint->relatedObjectName]));
 
             /** @var \Symfony\Component\Validator\ConstraintViolationInterface $error */
             foreach ($errors as $error) {

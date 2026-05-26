@@ -17,7 +17,7 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
         static::bootKernel();
 
         /** @var \Doctrine\ODM\MongoDB\DocumentManager $dm */
-        $dm = static::$container->get('doctrine_mongodb.odm.document_manager');
+        $dm = static::getContainer()->get('doctrine_mongodb.odm.document_manager');
         $dm->createQueryBuilder(Attachment::class)->remove()->getQuery()->execute();
         $dm->createQueryBuilder(Acme::class)->remove()->getQuery()->execute();
     }
@@ -29,7 +29,7 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
     {
         $acme = new Acme();
         /** @var \Doctrine\ODM\MongoDB\DocumentManager $dm */
-        $dm = static::$container->get('doctrine_mongodb.odm.document_manager');
+        $dm = static::getContainer()->get('doctrine_mongodb.odm.document_manager');
         $dm->persist($acme);
         $dm->flush();
 
@@ -46,7 +46,8 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
                     'identifier' => $acme->getId(),
                 ],
                 'metadata' => [
-                    'relatedObject' => 'acme_mongodb',
+                    'related-object-name' => 'acme_mongodb',
+                    'related-object-identifier' => $acme->getId(),
                 ],
             ],
             ['file' => new UploadedFile($targetFile, 'centralbill.png', 'image/png')],
@@ -57,8 +58,9 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
         $this->assertResponseStatusCodeSame(201);
         $this->assertEquals('s3', $content['volumeName']);
         $this->assertStringContainsString('.png', $content['filename']);
-        $this->assertEquals('acme_mongodb', $content['metadata']['relatedObject']);
         $this->assertEquals('image/png', $content['metadata']['mime-type']);
+        $this->assertEquals('acme_mongodb', $content['metadata']['related-object-name']);
+        $this->assertEquals($acme->getId(), $content['metadata']['related-object-identifier']);
         $this->assertArrayHasKey('filename', $content);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
@@ -79,8 +81,8 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('s3', $content['volumeName']);
         $this->assertStringContainsString('.png', $content['filename']);
-        $this->assertEquals('acme_mongodb', $content['metadata']['relatedObject']);
         $this->assertEquals('image/png', $content['metadata']['mime-type']);
+        $this->assertEquals('acme_mongodb', $content['metadata']['related-object-name']);
         $this->assertEquals($depends['lastModified'], $content['lastModified']);
         $this->assertEquals($depends['publicUrl'], $content['publicUrl']);
 
@@ -111,8 +113,8 @@ class AttachmentDocumentControllerTest extends AbstractWebTestCase
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('s3', $content['volumeName']);
         $this->assertStringContainsString('.ico', $content['filename']);
-        $this->assertEquals('acme_mongodb', $content['metadata']['relatedObject']);
         $this->assertEquals('image/vnd.microsoft.icon', $content['metadata']['mime-type']);
+        $this->assertEquals('acme_mongodb', $content['metadata']['related-object-name']);
         $this->assertNotEquals($depends['lastModified'], $content['lastModified']);
         $this->assertNotEquals($depends['publicUrl'], $content['publicUrl']);
 

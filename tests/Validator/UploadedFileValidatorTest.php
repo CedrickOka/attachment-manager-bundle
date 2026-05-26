@@ -4,11 +4,17 @@ namespace Oka\AttachmentManagerBundle\Tests\Validator;
 
 use Oka\AttachmentManagerBundle\Validator\UploadedFile;
 use Oka\AttachmentManagerBundle\Validator\UploadedFileValidator;
-use Symfony\Component\Validator\Constraints\FileValidator;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\DependencyInjection\Argument\ServiceLocator;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\FileValidator;
+use Symfony\Component\Validator\Constraints\GroupSequence;
+use Symfony\Component\Validator\ConstraintValidatorInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Mapping\MetadataInterface;
+use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
+use Symfony\Component\Validator\Validator\ContextualValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
@@ -17,7 +23,7 @@ class UploadedFileValidatorTest extends ConstraintValidatorTestCase
 {
     public function provideInvalidConstraints(): iterable
     {
-        yield [new UploadedFile(['relatedObjectName' => 'acme'])];
+        yield [new UploadedFile('acme')];
     }
 
     /**
@@ -25,7 +31,7 @@ class UploadedFileValidatorTest extends ConstraintValidatorTestCase
      */
     public function testNullIsValid()
     {
-        $this->validator->validate(null, new UploadedFile(['relatedObjectName' => 'acme']));
+        $this->validator->validate(null, new UploadedFile('acme'));
 
         $this->assertNoViolation();
     }
@@ -43,7 +49,7 @@ class UploadedFileValidatorTest extends ConstraintValidatorTestCase
         $this->assertNoViolation();
     }
 
-    protected function createValidator()
+    protected function createValidator(): ConstraintValidatorInterface
     {
         return new UploadedFileValidator(
             new class($this->context) implements ValidatorInterface {
@@ -54,7 +60,7 @@ class UploadedFileValidatorTest extends ConstraintValidatorTestCase
                     $this->context = $context;
                 }
 
-                public function validate($value, $constraints = null, $groups = null)
+                public function validate(mixed $value, Constraint|array|null $constraints = null, string|GroupSequence|array|null $groups = null): ConstraintViolationListInterface
                 {
                     $validator = new FileValidator();
                     $validator->initialize($this->context);
@@ -63,35 +69,34 @@ class UploadedFileValidatorTest extends ConstraintValidatorTestCase
                     return $this->context->getViolations();
                 }
 
-                public function validateProperty(object $object, string $propertyName, $groups = null)
+                public function validateProperty(object $object, string $propertyName, string|GroupSequence|array|null $groups = null): ConstraintViolationListInterface
                 {
                 }
 
-                public function validatePropertyValue($objectOrClass, string $propertyName, $value, $groups = null)
+                public function validatePropertyValue(object|string $objectOrClass, string $propertyName, mixed $value, string|GroupSequence|array|null $groups = null): ConstraintViolationListInterface
                 {
                 }
 
-                public function startContext()
+                public function startContext(): ContextualValidatorInterface
                 {
                 }
 
-                public function inContext(ExecutionContextInterface $context)
+                public function inContext(ExecutionContextInterface $context): ContextualValidatorInterface
                 {
                 }
 
-                public function getMetadataFor($value)
+                public function getMetadataFor(mixed $value): MetadataInterface
                 {
                 }
 
-                public function hasMetadataFor($value)
+                public function hasMetadataFor(mixed $value): bool
                 {
                 }
-            }, 
-            new ServiceLocator(function(){}, []),
+            },
+            new ServiceLocator(function () {}, []),
             [],
-            ['acme' => '5ki'], 
+            ['acme' => '5ki'],
             ['acme' => 3]
         );
-        
     }
 }

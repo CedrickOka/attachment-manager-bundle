@@ -4,6 +4,7 @@ namespace Oka\AttachmentManagerBundle\Tests\Validator;
 
 use Oka\AttachmentManagerBundle\Validator\IsRelatedObjectName;
 use Oka\AttachmentManagerBundle\Validator\IsRelatedObjectNameValidator;
+use Symfony\Component\Validator\ConstraintValidatorInterface;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 /**
@@ -42,7 +43,7 @@ class IsRelatedObjectNameValidatorTest extends ConstraintValidatorTestCase
              ->assertRaised();
     }
 
-    protected function createValidator()
+    protected function createValidator(): ConstraintValidatorInterface
     {
         return new IsRelatedObjectNameValidator(['acme']);
     }

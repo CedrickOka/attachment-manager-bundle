@@ -18,13 +18,13 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
         static::bootKernel();
 
         /** @var \Doctrine\ORM\EntityManagerInterface $em */
-        $em = static::$container->get('doctrine.orm.entity_manager');
+        $em = static::getContainer()->get('doctrine.orm.entity_manager');
         $metaData = $em->getMetadataFactory()->getAllMetadata();
         $schemaTool = new SchemaTool($em);
         $schemaTool->updateSchema($metaData);
 
-        $em->createQueryBuilder()->delete(Attachment::class)->getQuery()->execute();
-        $em->createQueryBuilder()->delete(Acme::class)->getQuery()->execute();
+        $em->createQueryBuilder()->delete(Attachment::class, 'd')->getQuery()->execute();
+        $em->createQueryBuilder()->delete(Acme::class, 'd')->getQuery()->execute();
     }
 
     /**
@@ -34,7 +34,7 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
     {
         $acme = new Acme();
         /** @var \Doctrine\ORM\EntityManagerInterface $em */
-        $em = static::$container->get('doctrine.orm.entity_manager');
+        $em = static::getContainer()->get('doctrine.orm.entity_manager');
         $em->persist($acme);
         $em->flush();
 
@@ -58,8 +58,8 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
 
         $this->assertResponseStatusCodeSame(201);
         $this->assertEquals('file', $content['volumeName']);
+        $this->assertStringContainsString('.png', $content['filename']);
         $this->assertEquals('image/png', $content['metadata']['mime-type']);
-        $this->assertArrayHasKey('filename', $content);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
         $content['relatedObject'] = $acme;
@@ -79,6 +79,7 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('file', $content['volumeName']);
+        $this->assertStringContainsString('.png', $content['filename']);
         $this->assertEquals('image/png', $content['metadata']['mime-type']);
         $this->assertArrayHasKey('lastModified', $content);
         $this->assertArrayHasKey('publicUrl', $content);
@@ -94,27 +95,27 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
     public function testThatWeCanUpdateAttachment(array $depends)
     {
         $fs = new Filesystem();
-        $targetFile = sprintf('%s/../assets/centralbill.test.png', __DIR__);
-        $fs->copy(sprintf('%s/../assets/centralbill.png', __DIR__), $targetFile);
+        $targetFile = sprintf('%s/../assets/aynid.test.ico', __DIR__);
+        $fs->copy(sprintf('%s/../assets/aynid.ico', __DIR__), $targetFile);
 
         $this->client->request(
             'POST',
             sprintf('/v1/rest/attachments/%s/acme_orm', $depends['id']),
             [],
-            ['file' => new UploadedFile($targetFile, 'centralbill.png', 'image/png')],
+            ['file' => new UploadedFile($targetFile, 'aynid.ico', 'image/x-icon')],
             ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']
         );
         $content = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertResponseStatusCodeSame(200);
         $this->assertEquals('file', $content['volumeName']);
-        $this->assertEquals('image/png', $content['metadata']['mime-type']);
-        $this->assertArrayHasKey('lastModified', $content);
-        $this->assertArrayHasKey('publicUrl', $content);
+        $this->assertStringContainsString('.ico', $content['filename']);
+        $this->assertEquals('image/vnd.microsoft.icon', $content['metadata']['mime-type']);
+        $this->assertNotEquals($depends['publicUrl'], $content['publicUrl']);
 
         return $depends;
     }
-    
+
     /**
      * @covers
      *
@@ -122,10 +123,6 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
      */
     public function testThatWeCanAddAttachment(array $depends)
     {
-        $fs = new Filesystem();
-        $targetFile = sprintf('%s/../assets/centralbill.test.png', __DIR__);
-        $fs->copy(sprintf('%s/../assets/centralbill.png', __DIR__), $targetFile);
-
         $this->client->request(
             'POST',
             '/v1/rest/attachments',
@@ -135,7 +132,7 @@ class AttachmentEntityControllerTest extends AbstractWebTestCase
                     'identifier' => $depends['relatedObject']->getId(),
                 ],
             ],
-            ['file' => new UploadedFile($targetFile, 'centralbill.png', 'image/png')],
+            ['file' => new UploadedFile(sprintf('%s/../assets/aynid.ico', __DIR__), 'aynid.ico', 'image/x-icon')],
             ['CONTENT_TYPE' => 'multipart/form-data; boundary=---------------------------15989724838008403852242650740']
         );
         $content = json_decode($this->client->getResponse()->getContent(), true);

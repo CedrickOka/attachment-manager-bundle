@@ -33,10 +33,10 @@ abstract class AbstractDoctrineListener implements EventSubscriber
         ];
     }
 
-    public function loadClassMetadata(LoadClassMetadataEventArgs $event): void
+    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void
     {
         /** @var ClassMetadata $classMetadata */
-        $classMetadata = $event->getClassMetadata();
+        $classMetadata = $eventArgs->getClassMetadata();
 
         /** @var \ReflectionClass $reflClass */
         if (null === ($reflClass = $classMetadata->getReflectionClass())) {
@@ -50,13 +50,13 @@ abstract class AbstractDoctrineListener implements EventSubscriber
         $this->doLoadClassMetadata($classMetadata, $reflClass);
     }
 
-    public function postRemove(LifecycleEventArgs $event): void
+    public function postRemove(LifecycleEventArgs $eventArgs): void
     {
-        if (!is_a($event->getObject(), $this->className)) {
+        if (!is_a($eventArgs->getObject(), $this->className)) {
             return;
         }
 
-        $this->volumeHandlerManager->deleteFile($event->getObject());
+        $this->volumeHandlerManager->deleteFile($eventArgs->getObject());
     }
 
     abstract protected function doLoadClassMetadata(ClassMetadata $classMetadata, \ReflectionClass $reflClass): void;

@@ -2,6 +2,7 @@
 
 namespace Oka\AttachmentManagerBundle\Traits;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Oka\AttachmentManagerBundle\Model\AttachmentInterface;
 
@@ -31,7 +32,11 @@ trait Attacheable
 
     public function setAttachments(iterable $attachments): self
     {
-        $this->attachments = $attachments;
+        $this->attachments = new ArrayCollection();
+
+        foreach ($attachments as $attachment) {
+            $this->addAttachment($attachment);
+        }
 
         return $this;
     }

@@ -29,11 +29,9 @@ class VolumeController extends AbstractController
      *
      * @param string $version
      * @param string $protocol
-     *
-     * @AccessControl(version="v1", protocol="rest", formats="json")
-     *
-     * @RequestContent(constraints="createConstraints")
      */
+    #[AccessControl('rest', 'v1', ['json'])]
+    #[RequestContent(constraints: 'createConstraints')]
     public function create(Request $request, $version, $protocol, array $requestContent): Response
     {
         if ($this->volumeHandlerManager->exists($requestContent['name'])) {
@@ -50,9 +48,8 @@ class VolumeController extends AbstractController
      *
      * @param string $version
      * @param string $protocol
-     *
-     * @AccessControl(version="v1", protocol="rest", formats="json")
      */
+    #[AccessControl('rest', 'v1', ['json'])]
     public function delete(Request $request, $version, $protocol, string $name): Response
     {
         $this->volumeHandlerManager->delete($name, $request->query->has('recursive'));

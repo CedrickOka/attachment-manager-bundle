@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class DoctrinePass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $attachmentManagerServiceIds = [];
 
@@ -36,7 +36,6 @@ class DoctrinePass implements CompilerPassInterface
             $attachmentManagerServiceId = sprintf('oka_attachment_manager.%s.attachment_manager', $key);
 
             $container->setAlias($registryAliasId, new Alias($dbDriver['registry'], false));
-
             $container
                 ->setDefinition($objectManagerServiceId, new Definition(ObjectManager::class, [new Parameter(sprintf('oka_attachment_manager.%s.model_manager_name', $key))]))
                 ->setFactory([new Reference($registryAliasId), 'getManager']);

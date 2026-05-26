@@ -103,4 +103,9 @@ abstract class AbstractAttachment implements AttachmentInterface
 
         return $this;
     }
+
+    public function prePersist()
+    {
+        $this->lastModified = new \DateTime();
+    }
 }

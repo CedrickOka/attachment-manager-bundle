@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class CheckAwsS3EnabledPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         /** @var \Oka\AttachmentManagerBundle\Service\VolumeHandlerManager $volumeHandlerManager */
         $volumeHandlerManager = $container->get('oka_attachment_manager.volume_handler_manager');

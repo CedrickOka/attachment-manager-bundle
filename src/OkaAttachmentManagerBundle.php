@@ -23,14 +23,14 @@ class OkaAttachmentManagerBundle extends Bundle
     public static $doctrineDrivers = [
         'orm' => [
             'registry' => 'doctrine',
-            'subscriber_class' => DoctrineORMListener::class,
-            'tag' => 'doctrine.event_subscriber',
+            'listener_class' => DoctrineORMListener::class,
+            'tag' => 'doctrine.event_listener',
             'bundle' => 'doctrine/doctrine-bundle',
         ],
         'mongodb' => [
             'registry' => 'doctrine_mongodb',
-            'subscriber_class' => DoctrineMongoDBListener::class,
-            'tag' => 'doctrine_mongodb.odm.event_subscriber',
+            'listener_class' => DoctrineMongoDBListener::class,
+            'tag' => 'doctrine_mongodb.odm.event_listener',
             'bundle' => 'doctrine/mongodb-odm-bundle',
         ],
     ];
@@ -40,7 +40,7 @@ class OkaAttachmentManagerBundle extends Bundle
         return \dirname(__DIR__);
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 
@@ -51,7 +51,7 @@ class OkaAttachmentManagerBundle extends Bundle
         $container->addCompilerPass(new DoctrinePass());
     }
 
-    private function addRegisterMappingsPass(ContainerBuilder $container)
+    private function addRegisterMappingsPass(ContainerBuilder $container): void
     {
         $mapping = [realpath(__DIR__.'/../config/doctrine') => 'Oka\AttachmentManagerBundle\Model'];
 

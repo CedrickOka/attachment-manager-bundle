@@ -14,7 +14,6 @@ class IsRelatedObjectNameValidator extends ConstraintValidator
 {
     public function __construct(private array $relatedObjectNames)
     {
-        $this->relatedObjectNames = $relatedObjectNames;
     }
 
     public function validate($value, Constraint $constraint): void

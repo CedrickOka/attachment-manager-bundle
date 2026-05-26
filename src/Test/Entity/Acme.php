@@ -5,27 +5,24 @@ namespace Oka\AttachmentManagerBundle\Test\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Oka\AttachmentManagerBundle\Traits\Attacheable;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 /**
- * @ORM\Entity()
- *
- * @ORM\Table(name="acme")
- *
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
  */
+#[ORM\Entity()]
+#[ORM\Table(name: 'acme')]
 class Acme
 {
     use Attacheable;
 
     /**
-     * @ORM\Id()
-     *
-     * @ORM\Column(type="integer")
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     *
-     * @var string
+     * @var int
      */
+    #[ORM\Id()]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[Serializer\Groups(['summary', 'details'])]
     protected $id;
 
     public function __construct()
@@ -33,8 +30,8 @@ class Acme
         $this->attachments = new ArrayCollection();
     }
 
-    public function getId(): string
+    public function getId(): int
     {
-        return (string) $this->id;
+        return $this->id;
     }
 }

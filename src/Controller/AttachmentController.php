@@ -24,10 +24,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class AttachmentController extends AbstractController
 {
     public function __construct(
-        SerializerInterface $serializer, 
-        private ValidatorInterface $validator, 
-        private ServiceLocator $attachmentManagerLocator, 
-        private array $relatedObjectDBDriverMapping
+        SerializerInterface $serializer,
+        private ValidatorInterface $validator,
+        private ServiceLocator $attachmentManagerLocator,
+        private array $relatedObjectDBDriverMapping,
     ) {
         parent::__construct($serializer);
     }
@@ -37,18 +37,12 @@ class AttachmentController extends AbstractController
      *
      * @param string $version
      * @param string $protocol
-     *
-     * @AccessControl(version="v1", protocol="rest", formats="json")
-     *
-     * @RequestContent(constraints="createConstraints")
      */
+    #[AccessControl('rest', 'v1', ['json'])]
+    #[RequestContent(constraints: 'createConstraints')]
     public function create(Request $request, $version, $protocol, array $requestContent): Response
     {
-        $constraint = new UploadedFile([
-            'errorPath' => '[file]', 
-            'relatedObjectName' => $requestContent['relatedObject']['name'], 
-            'relatedObjectIdentifier' => $requestContent['relatedObject']['identifier'],
-        ]);
+        $constraint = new UploadedFile($requestContent['relatedObject']['name'], $requestContent['relatedObject']['identifier'], '[file]');
 
         if (null !== ($response = $this->validate($requestContent['file'], $constraint))) {
             return $response;
@@ -70,9 +64,8 @@ class AttachmentController extends AbstractController
      *
      * @param string $version
      * @param string $protocol
-     *
-     * @AccessControl(version="v1", protocol="rest", formats="json")
      */
+    #[AccessControl('rest', 'v1', ['json'])]
     public function read(Request $request, $version, $protocol, string $id, string $relatedObjectName): JsonResponse
     {
         if (!$attachment = $this->getAttachmentManager($relatedObjectName)->find($id)) {
@@ -87,15 +80,13 @@ class AttachmentController extends AbstractController
      *
      * @param string $version
      * @param string $protocol
-     *
-     * @AccessControl(version="v1", protocol="rest", formats="json")
-     *
-     * @RequestContent(constraints="updateConstraints")
      */
+    #[AccessControl('rest', 'v1', ['json'])]
+    #[RequestContent(constraints: 'updateConstraints')]
     public function update(Request $request, $version, $protocol, array $requestContent, string $id, string $relatedObjectName): JsonResponse
     {
         if (isset($requestContent['file'])) {
-            if (null !== ($response = $this->validate($requestContent['file'], new UploadedFile(['relatedObjectName' => $relatedObjectName, 'errorPath' => '[file]'])))) {
+            if (null !== ($response = $this->validate($requestContent['file'], new UploadedFile($relatedObjectName, errorPath: '[file]')))) {
                 return $response;
             }
         }
@@ -116,9 +107,8 @@ class AttachmentController extends AbstractController
      *
      * @param string $version
      * @param string $protocol
-     *
-     * @AccessControl(version="v1", protocol="rest", formats="json")
      */
+    #[AccessControl('rest', 'v1', ['json'])]
     public function delete(Request $request, $version, $protocol, string $id, string $relatedObjectName): Response
     {
         $attachmentManager = $this->getAttachmentManager($relatedObjectName);
@@ -168,10 +158,7 @@ class AttachmentController extends AbstractController
                 'identifier' => new Assert\Required(new Assert\NotBlank()),
             ])),
             'file' => new $className(new Assert\File()),
-            'metadata' => new Assert\Optional(new Assert\Collection([
-                'fields' => [],
-                'allowExtraFields' => true,
-            ])),
+            'metadata' => new Assert\Optional(new Assert\Collection(fields: [], allowExtraFields: true)),
         ]);
     }
 }

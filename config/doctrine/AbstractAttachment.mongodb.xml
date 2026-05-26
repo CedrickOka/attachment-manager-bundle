@@ -21,9 +21,9 @@
             </index>
         </indexes>
 
-<!--         <lifecycle-callbacks>
-            <lifecycle-callback type="prePersist" method="setLastModified"/>
-            <lifecycle-callback type="preUpdate" method="setLastModified"/>
-        </lifecycle-callbacks> -->
+        <lifecycle-callbacks>
+            <lifecycle-callback type="prePersist" method="prePersist"/>
+            <lifecycle-callback type="preUpdate" method="prePersist"/>
+        </lifecycle-callbacks>
     </mapped-superclass>
 </doctrine-mongo-mapping>

@@ -3,7 +3,8 @@ framework:
     secret: 'secret'
     default_locale: 'fr'
     session:
-        storage_id: session.storage.mock_file
+        storage_factory_id: session.storage.factory.mock_file
+        handler_id: null
     php_errors:
         log: true
 
@@ -38,7 +39,7 @@ doctrine:
         mappings:
             OkaAttachmentManagerBundle:
                 is_bundle: false
-                type: annotation
+                type: attribute
                 dir: '%kernel.project_dir%/src/Test/Entity'
                 prefix: 'Oka\AttachmentManagerBundle\Test\Entity'
                 alias: OkaAttachmentManagerBundle
@@ -57,7 +58,7 @@ doctrine_mongodb:
             mappings:
                 OkaAttachmentManagerBundle:
                     is_bundle: false
-                    type: annotation
+                    type: attribute
                     dir: '%kernel.project_dir%/src/Test/Document'
                     prefix: 'Oka\AttachmentManagerBundle\Test\Document'
                     alias: OkaAttachmentManagerBundle

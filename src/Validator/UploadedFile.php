@@ -6,23 +6,27 @@ use Symfony\Component\Validator\Constraint;
 
 /**
  * @author Cedrick Oka Baidai <okacedrick@gmail.com>
- *
- * @Annotation
  */
-#[\Attribute]
+#[\Attribute()]
 class UploadedFile extends Constraint
 {
-    public ?string $relatedObjectName = null;
-    public ?string $relatedObjectIdentifier = null;
-    public ?string $errorPath = null;
-    public string $message = 'The file is not valid.';
+    public function __construct(
+        public ?string $relatedObjectName = null,
+        public ?string $relatedObjectIdentifier = null,
+        public ?string $errorPath = null,
+        public string $message = 'The file is not valid.',
+        ?array $groups = null,
+        $payload = null,
+    ) {
+        parent::__construct(null, $groups, $payload);
+    }
 
-    public function getRequiredOptions()
+    public function getRequiredOptions(): array
     {
         return ['relatedObjectName'];
     }
 
-    public function getDefaultOption()
+    public function getDefaultOption(): string
     {
         return 'relatedObjectName';
     }

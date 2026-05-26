@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class CachePoolServicePass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (null === ($cacheId = $container->getParameter('oka_attachment_manager.cache_id'))) {
             return;
