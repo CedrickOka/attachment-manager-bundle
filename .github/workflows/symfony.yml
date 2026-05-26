@@ -14,15 +14,6 @@ on:
 permissions:
   contents: read
 
-services:
-  minio:
-    image: minio/minio:latest
-    ports:
-      - 9000:9000
-    env:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
-    options: server /data
 
 jobs:
   phpunit:
@@ -41,6 +32,16 @@ jobs:
             symfony_version: "7.4"
             stability: "stable"
     runs-on: ubuntu-latest
+    services:
+      minio:
+        image: minio/minio:latest
+        ports:
+          - 9000:9000
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        options: server /data
+        
     continue-on-error: ${{ matrix.stability == 'dev' }}
     steps:
       - name: Setup PHP, with composer and extensions
