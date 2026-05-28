@@ -32,16 +32,6 @@ jobs:
             symfony_version: "7.4"
             stability: "stable"
     runs-on: ubuntu-latest
-    services:
-      minio:
-        image: quay.io/minio/aistor/minio:RELEASE.2026-05-04T23-02-27Z
-        ports:
-          - 9000:9000
-        env:
-          MINIO_ROOT_USER: minioadmin
-          MINIO_ROOT_PASSWORD: minioadmin
-        options: server /data
-        
     continue-on-error: ${{ matrix.stability == 'dev' }}
     steps:
       - name: Setup PHP, with composer and extensions
@@ -61,6 +51,14 @@ jobs:
         uses: supercharge/mongodb-github-action@1.12.1
         with:
           mongodb-version: '7.0'
+
+      - name: Start MinIO Server
+        run: |
+          wget https://dl.min.io/server/minio/release/linux-amd64/minio
+          chmod +x minio
+          export MINIO_ROOT_USER=minioadmin
+          export MINIO_ROOT_PASSWORD=minioadmin
+          ./minio server /tmp/minio &
 
       - name: symfony/flex is required to install the correct symfony version
         if: ${{ matrix.symfony_version }}
