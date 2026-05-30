@@ -11,14 +11,21 @@ use Symfony\Component\Validator\Constraint;
 class UploadedFile extends Constraint
 {
     public function __construct(
-        public ?string $relatedObjectName = null,
+        public $relatedObjectName,
         public ?string $relatedObjectIdentifier = null,
         public ?string $errorPath = null,
         public string $message = 'The file is not valid.',
         ?array $groups = null,
         $payload = null,
+        array $options = [],
     ) {
-        parent::__construct(null, $groups, $payload);
+        if (\is_array($relatedObjectName)) {
+            $options = array_merge($relatedObjectName, $options);
+        } elseif (null !== $relatedObjectName) {
+            $options['relatedObjectName'] = $relatedObjectName;
+        }
+
+        parent::__construct($options, $groups, $payload);
     }
 
     public function getRequiredOptions(): array

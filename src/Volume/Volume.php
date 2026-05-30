@@ -7,17 +7,13 @@ namespace Oka\AttachmentManagerBundle\Volume;
  */
 class Volume
 {
-    private $name;
-    private $dsn;
-    private $options;
-    private $publicUrl;
-
-    public function __construct(string $name, string $dsn, array $options = [], ?string $publicUrl = null)
-    {
-        $this->name = $name;
-        $this->dsn = $dsn;
-        $this->options = $options;
-        $this->publicUrl = $publicUrl;
+    public function __construct(
+        private string $name,
+        private string $dsn,
+        private array $options = [],
+        private ?string $publicUrl = null,
+        private int $cacheItemTtl = 0,
+    ) {
     }
 
     public function getName(): string
@@ -38,5 +34,10 @@ class Volume
     public function getPublicUrl(): ?string
     {
         return $this->publicUrl;
+    }
+
+    public function getCacheItemTtl(): int
+    {
+        return $this->cacheItemTtl;
     }
 }

@@ -13,14 +13,9 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 class S3VolumeHandler extends FileVolumeHandler
 {
-    private $s3Client;
-    private $cachedPublicS3Client = [];
-
-    public function __construct(S3ClientInterface $s3Client)
+    public function __construct(private S3ClientInterface $s3Client, private array $cachedPublicS3Client = [])
     {
         $s3Client->registerStreamWrapper();
-
-        $this->s3Client = $s3Client;
     }
 
     public function exists(Volume $volume): bool
@@ -92,7 +87,7 @@ class S3VolumeHandler extends FileVolumeHandler
 
         unlink($file->getRealPath());
     }
-    
+
     public function renameFile(Volume $volume, AttachmentInterface $from, AttachmentInterface $to): void
     {
         rename($this->getAttachmentRealPath($volume, $from), $this->getAttachmentRealPath($volume, $to), stream_context_create(['s3' => ['MetadataDirective' => 'COPY']]));
@@ -157,7 +152,7 @@ class S3VolumeHandler extends FileVolumeHandler
                     'Key' => $attachment->getFilename(),
                 ]
             ),
-            '+1440 minutes'
+            0 < $volume->getCacheItemTtl() ? sprintf('+%s minutes', $volume->getCacheItemTtl() / 60) : '+1440 minutes'
         );
 
         return $presignedRequest->getUri();

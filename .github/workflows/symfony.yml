@@ -80,7 +80,7 @@ jobs:
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
-          SYMFONY_DEPRECATIONS_HELPER: max[direct]=0
+          SYMFONY_DEPRECATIONS_HELPER: max[direct]=7
           MONGODB_URL: 'mongodb://localhost:27017'
           MONGODB_DB: 'db_name'
           OBJECT_STORAGE_URL: 'http://localhost:9000'

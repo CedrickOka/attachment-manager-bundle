@@ -56,7 +56,7 @@ class VolumeHandlerManager
         }
 
         $configuration = $this->volumes->get($args[0]);
-        $args[0] = new Volume($args[0], $configuration['dsn'], $configuration['options'], $configuration['public_url']);
+        $args[0] = new Volume($args[0], $configuration['dsn'], $configuration['options'], $configuration['public_url'], $configuration['cache_item_ttl']);
 
         /** @var \Oka\AttachmentManagerBundle\Volume\VolumeHandlerFactoryInterface $factory */
         foreach ($this->volumeHandlerFactories as $factory) {
